@@ -2,17 +2,19 @@ using UnityEngine;
 
 public class MoveCamera : MonoBehaviour
 {
-    [SerializeField] private GameObject player;
+    [SerializeField] private GameObject _player;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Awake()
     {
-        
+        _player = GameObject.FindGameObjectWithTag("Player");
+
+        // エラー確認
+        Debug.Assert(_player != null, $"{nameof(_player)} is not assigned.", this);
     }
 
     // Update is called once per frame
-    void Update()
+    private void LateUpdate()
     {
-        this.transform.position = new Vector3(player.transform.position.x, player.transform.position.y, this.transform.position.z);
+        this.transform.position = new Vector3(_player.transform.position.x, _player.transform.position.y, this.transform.position.z);
     }
 }

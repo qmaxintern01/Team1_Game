@@ -13,6 +13,8 @@ namespace Team1
 
         private void Awake()
         {
+            _player = GameObject.FindGameObjectWithTag("Player");
+
             // エラー確認
             Debug.Assert(_player != null, $"{nameof(_player)} is not assigned.", this);
         }
