@@ -7,6 +7,7 @@ namespace Team1
     {
         [SerializeField] private float _speed = 8f;
         [SerializeField] private float _lifeTime = 5f;
+        [SerializeField] private LayerMask _targetLayer;
 
         private Vector3 _direction;
         private int _damage;
@@ -25,6 +26,12 @@ namespace Team1
 
         private void OnTriggerEnter2D(Collider2D other)
         {
+            // _targetLayerに含まれない対象(発射元の敵同士など)は無視する
+            if ((_targetLayer.value & (1 << other.gameObject.layer)) == 0)
+            {
+                return;
+            }
+
             if (other.TryGetComponent(out IDamageable damageable))
             {
                 damageable.TakeDamage(_damage);

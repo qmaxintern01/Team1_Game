@@ -43,6 +43,11 @@ namespace Team1
 
         private void Update()
         {
+            if (_player == null)
+            {
+                return;
+            }
+
             // 設定された入力値を適用
             _moveInput = _gameInputs.Player.Move.ReadValue<Vector2>();
 

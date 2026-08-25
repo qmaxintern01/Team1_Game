@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 namespace Team1
@@ -9,14 +8,13 @@ namespace Team1
         [Header("近距離攻撃")]
         [SerializeField] private int _meleeDamage = 5;
         [SerializeField] private float _meleeRadius = 1.5f;
+        [SerializeField] private float _meleeTelegraphTime = 0.3f;
 
         [Header("溜め攻撃")]
         [SerializeField] private int _chargeDamage = 10;
         [SerializeField] private float _chargeRadius = 2f;
         [SerializeField] private float _chargeWindUpTime = 1f;
         [SerializeField, Range(0f, 1f)] private float _chargeAttackChance = 0.3f;
-
-        private bool _isCharging;
 
         private void Reset()
         {
@@ -26,40 +24,16 @@ namespace Team1
             _detectionRange = 10f;
         }
 
-        protected override void ChasePlayer()
-        {
-            if (_isCharging)
-            {
-                return;
-            }
-
-            base.ChasePlayer();
-        }
-
         protected override void PerformAttack()
         {
-            if (_isCharging)
-            {
-                return;
-            }
-
             if (Random.value < _chargeAttackChance)
             {
-                StartCoroutine(ChargeAttackRoutine());
+                StartCoroutine(TelegraphAndDealDamage(_chargeDamage, _chargeRadius, _chargeWindUpTime));
             }
             else
             {
-                DealDamageAround(_meleeDamage, _meleeRadius);
+                StartCoroutine(TelegraphAndDealDamage(_meleeDamage, _meleeRadius, _meleeTelegraphTime));
             }
-        }
-
-        private IEnumerator ChargeAttackRoutine()
-        {
-            _isCharging = true;
-            yield return new WaitForSeconds(_chargeWindUpTime);
-
-            DealDamageAround(_chargeDamage, _chargeRadius);
-            _isCharging = false;
         }
     }
 }

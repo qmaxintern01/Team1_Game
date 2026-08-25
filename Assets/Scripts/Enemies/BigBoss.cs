@@ -9,10 +9,12 @@ namespace Team1
         [Header("近距離攻撃")]
         [SerializeField] private int _meleeDamage = 7;
         [SerializeField] private float _meleeRadius = 1.5f;
+        [SerializeField] private float _meleeTelegraphTime = 0.3f;
 
         [Header("範囲薙ぎ祓い")]
         [SerializeField] private int _sweepDamage = 14;
         [SerializeField] private float _sweepRadius = 3f;
+        [SerializeField] private float _sweepTelegraphTime = 0.5f;
 
         [Header("ジャンプスタンプ")]
         [SerializeField] private int _stompDamage = 21;
@@ -20,8 +22,6 @@ namespace Team1
         [SerializeField] private float _jumpHeight = 4f;
         [SerializeField] private float _jumpUpTime = 0.5f;
         [SerializeField] private float _jumpDownTime = 0.4f;
-
-        private bool _isPerformingAttack;
 
         private void Reset()
         {
@@ -31,30 +31,15 @@ namespace Team1
             _detectionRange = 12f;
         }
 
-        protected override void ChasePlayer()
-        {
-            if (_isPerformingAttack)
-            {
-                return;
-            }
-
-            base.ChasePlayer();
-        }
-
         protected override void PerformAttack()
         {
-            if (_isPerformingAttack)
-            {
-                return;
-            }
-
             switch (Random.Range(0, 3))
             {
                 case 0:
-                    DealDamageAround(_meleeDamage, _meleeRadius);
+                    StartCoroutine(TelegraphAndDealDamage(_meleeDamage, _meleeRadius, _meleeTelegraphTime));
                     break;
                 case 1:
-                    DealDamageAround(_sweepDamage, _sweepRadius);
+                    StartCoroutine(TelegraphAndDealDamage(_sweepDamage, _sweepRadius, _sweepTelegraphTime));
                     break;
                 default:
                     StartCoroutine(StompAttackRoutine());
@@ -64,7 +49,11 @@ namespace Team1
 
         private IEnumerator StompAttackRoutine()
         {
-            _isPerformingAttack = true;
+            _isBusy = true;
+            if (_attackRangeIndicator != null)
+            {
+                _attackRangeIndicator.Show(_stompRadius);
+            }
 
             Vector3 origin = transform.position;
             Vector3 peak = origin + Vector3.up * _jumpHeight;
@@ -72,8 +61,13 @@ namespace Team1
             yield return MoveOverTime(origin, peak, _jumpUpTime);
             yield return MoveOverTime(peak, origin, _jumpDownTime);
 
+            if (_attackRangeIndicator != null)
+            {
+                _attackRangeIndicator.Hide();
+            }
+
             DealDamageAround(_stompDamage, _stompRadius);
-            _isPerformingAttack = false;
+            _isBusy = false;
         }
 
         private IEnumerator MoveOverTime(Vector3 from, Vector3 to, float duration)
