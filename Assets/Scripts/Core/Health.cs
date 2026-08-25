@@ -11,6 +11,7 @@ namespace Team1
         public int MaxHp { get; private set; }
         public int CurrentHp { get; private set; }
         public bool IsDead => CurrentHp <= 0;
+        public bool IsInvincible { get; set; }
 
         public void Initialize(int maxHp)
         {
@@ -20,7 +21,7 @@ namespace Team1
 
         public void TakeDamage(int amount)
         {
-            if (IsDead || amount <= 0)
+            if (IsDead || amount <= 0 || IsInvincible)
             {
                 return;
             }

@@ -10,6 +10,7 @@ namespace Team1
 
         private InputSystem_Actions _gameInputs;
         private Vector2 _moveInput;
+        private PlayerDash _dash;
 
         private void Awake()
         {
@@ -17,6 +18,11 @@ namespace Team1
 
             // エラー確認
             Debug.Assert(_player != null, $"{nameof(_player)} is not assigned.", this);
+
+            if (_player != null)
+            {
+                _dash = _player.GetComponent<PlayerDash>();
+            }
         }
 
         private void OnEnable()
@@ -36,7 +42,8 @@ namespace Team1
         {
             // 設定された入力値を適用
             _moveInput = _gameInputs.Player.Move.ReadValue<Vector2>();
-            _player.transform.position += new Vector3(_moveInput.x, _moveInput.y, 0) * _moveSpeed * Time.deltaTime;
+            float speedMultiplier = _dash != null ? _dash.SpeedMultiplier : 1f;
+            _player.transform.position += new Vector3(_moveInput.x, _moveInput.y, 0) * _moveSpeed * speedMultiplier * Time.deltaTime;
         }
     }
 }
