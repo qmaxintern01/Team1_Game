@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1634274450701346722}
   - component: {fileID: 6449689823896688469}
   - component: {fileID: 8558984440570894221}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: BigBoss
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -134,7 +134,7 @@ MonoBehaviour:
   _attackCooldown: 1.5
   _playerLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   _meleeDamage: 7
   _meleeRadius: 1.5
   _sweepDamage: 14

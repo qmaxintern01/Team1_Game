@@ -16,6 +16,11 @@ namespace Team1
 
         private void LateUpdate()
         {
+            if (_player == null)
+            {
+                return;
+            }
+
             transform.position = new Vector3(_player.transform.position.x, _player.transform.position.y, transform.position.z);
         }
     }

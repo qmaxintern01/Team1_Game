@@ -26,7 +26,7 @@ namespace Team1
         private void Start()
         {
             // 他のエネミーとの重なり回避に使うため、全エネミーが初期化された後に一括取得してキャッシュする
-            _otherEnemies = FindObjectsByType<EnemyPatrol>(FindObjectsSortMode.None);
+            _otherEnemies = FindObjectsByType<EnemyPatrol>(FindObjectsInactive.Exclude);
         }
 
         private void Update()

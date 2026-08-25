@@ -19,6 +19,18 @@ namespace Team1
         private void OnEnable()
         {
             _health.Initialize(_maxHp);
+            _health.OnDied += HandleDied;
+        }
+
+        private void OnDisable()
+        {
+            _health.OnDied -= HandleDied;
+        }
+
+        private void HandleDied()
+        {
+            // SetActiveにより、入力・移動・当たり判定を含めた全コンポーネントの動作が停止し、見た目も消える
+            gameObject.SetActive(false);
         }
     }
 }

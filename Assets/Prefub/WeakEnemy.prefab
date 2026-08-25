@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6965629362231676407}
   - component: {fileID: 3710812408757252495}
   - component: {fileID: 3106575444203946825}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: WeakEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -134,7 +134,7 @@ MonoBehaviour:
   _attackCooldown: 1.5
   _playerLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   _projectilePrefab: {fileID: 0}
   _gunDamage: 2
 --- !u!114 &3106575444203946825

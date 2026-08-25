@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 4973201008639721253}
   - component: {fileID: 5018429740753124656}
   - component: {fileID: 5540641811564438129}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: MidBoss
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -165,7 +165,7 @@ MonoBehaviour:
   _attackCooldown: 1.5
   _playerLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   _meleeDamage: 5
   _meleeRadius: 1.5
   _chargeDamage: 10
