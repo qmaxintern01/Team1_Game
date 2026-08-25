@@ -559,37 +559,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &707573999
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 707574001}
-  m_Layer: 0
-  m_Name: PlayerManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &707574001
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 707573999}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &775244244
 GameObject:
   m_ObjectHideFlags: 0
@@ -672,6 +641,9 @@ GameObject:
   - component: {fileID: 1295404894}
   - component: {fileID: 1295404893}
   - component: {fileID: 1295404892}
+  - component: {fileID: 1295404897}
+  - component: {fileID: 1295404896}
+  - component: {fileID: 1295404898}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -841,6 +813,59 @@ MonoBehaviour:
   _regenPerSecond: 5
   _dashSpeedMultiplier: 1.5
   _depletedSpeedMultiplier: 0.7
+--- !u!114 &1295404896
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1295404887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0d126dc625e47c49a2328187c72e974, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Team1.PlayerKnifeAttack
+  _weaponSwitcher: {fileID: 0}
+  _movePlayer: {fileID: 0}
+  _damage: 10
+  _range: 1.2
+  _radius: 0.8
+  _enemyLayer:
+    serializedVersion: 2
+    m_Bits: 0
+--- !u!114 &1295404897
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1295404887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31faaedfcdf99014a85c22a6b5d9fac4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Team1.PlayerWeaponSwitcher
+--- !u!114 &1295404898
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1295404887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a07c97dff997b514e8270842a3f147b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Team1.PlayerGunAttack
+  _weaponSwitcher: {fileID: 0}
+  _movePlayer: {fileID: 0}
+  _bulletPrefab: {fileID: 0}
+  _damage: 5
+  _oilCost: 1
+  _chargeInterval: 1
+  _damagePerChargeLevel: 1.5
+  _sizePerChargeLevel: 1.5
+  _oilCostPerChargeLevel: 1
 --- !u!1 &1304596650
 GameObject:
   m_ObjectHideFlags: 0
@@ -1143,7 +1168,6 @@ SceneRoots:
   - {fileID: 519420032}
   - {fileID: 619394802}
   - {fileID: 1295404889}
-  - {fileID: 707574001}
   - {fileID: 775244245}
   - {fileID: 1469546972}
   - {fileID: 1160881540}

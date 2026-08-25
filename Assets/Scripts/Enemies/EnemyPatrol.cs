@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Team1
 {
-    public class EnemyPatrol : MonoBehaviour
+    public class EnemyPatrol : MonoBehaviour, IFacingDirection
     {
         [SerializeField] private Transform[] _waypoints;
         [SerializeField] private float _moveSpeed = 3f;
@@ -13,6 +13,9 @@ namespace Team1
         private GameObject _player;
         private EnemyPatrol[] _otherEnemies;
         private int _currentWaypointIndex;
+
+        // 追跡・巡回移動の方向を保持し、静止中も直前の向きを維持する
+        public Vector2 FacingDirection { get; private set; } = Vector2.down;
 
         private void Awake()
         {
@@ -45,7 +48,9 @@ namespace Team1
 
         private void ChasePlayer()
         {
+            Vector3 previousPosition = transform.position;
             transform.position = Vector3.MoveTowards(transform.position, _player.transform.position, _moveSpeed * Time.deltaTime);
+            UpdateFacingDirection(transform.position - previousPosition);
         }
 
         private void Patrol()
@@ -56,11 +61,21 @@ namespace Team1
             }
 
             Transform target = _waypoints[_currentWaypointIndex];
+            Vector3 previousPosition = transform.position;
             transform.position = Vector3.MoveTowards(transform.position, target.position, _moveSpeed * Time.deltaTime);
+            UpdateFacingDirection(transform.position - previousPosition);
 
             if (Vector3.Distance(transform.position, target.position) <= _arrivalThreshold)
             {
                 _currentWaypointIndex = (_currentWaypointIndex + 1) % _waypoints.Length;
+            }
+        }
+
+        private void UpdateFacingDirection(Vector3 movementDelta)
+        {
+            if (movementDelta.sqrMagnitude > 0.0001f)
+            {
+                FacingDirection = ((Vector2)movementDelta).normalized;
             }
         }
 

@@ -3,11 +3,13 @@ using UnityEngine;
 namespace Team1
 {
     [RequireComponent(typeof(Health))]
-    public abstract class EnemyBase : MonoBehaviour
+    public abstract class EnemyBase : MonoBehaviour, IFacingDirection
     {
         [Header("ステータス")]
         [SerializeField] protected int _maxHp = 70;
         [SerializeField] protected int _oilRecoveryAmount = 10;
+
+        public int OilRecoveryAmount => _oilRecoveryAmount;
 
         [Header("移動・索敵")]
         [SerializeField] protected float _moveSpeed = 2f;
@@ -21,6 +23,9 @@ namespace Team1
         protected GameObject _player;
         protected Health _health;
         private float _attackTimer;
+
+        // 追跡移動の方向を保持し、静止中(攻撃中)も直前の向きを維持する
+        public Vector2 FacingDirection { get; private set; } = Vector2.down;
 
         protected virtual void Awake()
         {
@@ -68,7 +73,17 @@ namespace Team1
 
         protected virtual void ChasePlayer()
         {
+            Vector3 previousPosition = transform.position;
             transform.position = Vector3.MoveTowards(transform.position, _player.transform.position, _moveSpeed * Time.deltaTime);
+            UpdateFacingDirection(transform.position - previousPosition);
+        }
+
+        protected void UpdateFacingDirection(Vector3 movementDelta)
+        {
+            if (movementDelta.sqrMagnitude > 0.0001f)
+            {
+                FacingDirection = ((Vector2)movementDelta).normalized;
+            }
         }
 
         protected abstract void PerformAttack();
