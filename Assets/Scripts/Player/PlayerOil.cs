@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Team1
@@ -7,6 +8,8 @@ namespace Team1
     {
         [SerializeField] private int _maxOil = 200;
         [SerializeField] private int _currentOil = 100;
+
+        public event Action<int, int> OnOilChanged;
 
         public int CurrentOil => _currentOil;
         public int MaxOil => _maxOil;
@@ -24,6 +27,7 @@ namespace Team1
             }
 
             _currentOil = Mathf.Clamp(_currentOil + amount, 0, _maxOil);
+            OnOilChanged?.Invoke(_currentOil, _maxOil);
         }
 
         public bool TrySpendOil(int amount)
@@ -34,6 +38,7 @@ namespace Team1
             }
 
             _currentOil -= amount;
+            OnOilChanged?.Invoke(_currentOil, _maxOil);
             return true;
         }
     }

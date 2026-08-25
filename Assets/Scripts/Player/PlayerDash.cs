@@ -15,8 +15,6 @@ namespace Team1
         private InputSystem_Actions _gameInputs;
         private bool _isDepleted;
 
-        private int _dashInputCounter = 0; // ダッシュ入力のカウンター
-
         public float CurrentGauge => _currentGauge;
         public float MaxGauge => _maxGauge;
         public bool IsDashing { get; private set; }

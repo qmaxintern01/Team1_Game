@@ -6,6 +6,7 @@ namespace Team1
     public class MovePlayer : MonoBehaviour
     {
         [SerializeField] private GameObject _player;
+        [SerializeField] private Animator _animator;
         [SerializeField] private float _moveSpeed = 5f;
 
         private InputSystem_Actions _gameInputs;
@@ -25,6 +26,7 @@ namespace Team1
             if (_player != null)
             {
                 _dash = _player.GetComponent<PlayerDash>();
+                _animator = _player.GetComponent<Animator>();
             }
         }
 
@@ -53,7 +55,18 @@ namespace Team1
 
             if (_moveInput.sqrMagnitude > 0.0001f)
             {
+                // 入力がある場合は、向きの更新
                 FacingDirection = _moveInput.normalized;
+                _animator.SetFloat("MoveX", FacingDirection.x);
+                _animator.SetFloat("MoveY", FacingDirection.y);
+                _animator.SetBool("isMove", true);
+            }
+            else
+            {
+                // 動いていない
+                _animator.SetFloat("MoveX", 0.0f);
+                _animator.SetFloat("MoveY", 0.0f);
+                _animator.SetBool("isMove", false);
             }
 
             float speedMultiplier = _dash != null ? _dash.SpeedMultiplier : 1f;
