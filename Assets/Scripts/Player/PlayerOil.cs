@@ -5,8 +5,8 @@ namespace Team1
     // 敵撃破時にEnemyBaseから加算される、プレイヤーのオイル(回復資源)を保持する
     public class PlayerOil : MonoBehaviour
     {
-        [SerializeField] private int _maxOil = 100;
-        [SerializeField] private int _currentOil;
+        [SerializeField] private int _maxOil = 200;
+        [SerializeField] private int _currentOil = 100;
 
         public int CurrentOil => _currentOil;
         public int MaxOil => _maxOil;
@@ -24,6 +24,17 @@ namespace Team1
             }
 
             _currentOil = Mathf.Clamp(_currentOil + amount, 0, _maxOil);
+        }
+
+        public bool TrySpendOil(int amount)
+        {
+            if (amount <= 0 || _currentOil < amount)
+            {
+                return false;
+            }
+
+            _currentOil -= amount;
+            return true;
         }
     }
 }

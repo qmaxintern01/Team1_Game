@@ -450,9 +450,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 519420028}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e67104b19ff9ee74398c8f91bcdab42a, type: 3}
+  m_Script: {fileID: 11500000, guid: 4d44ee2382f5c1d4fbe6d941c48b7e9c, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MoveCamera
+  m_EditorClassIdentifier: Assembly-CSharp::Team1.MoveCamera
   _player: {fileID: 0}
 --- !u!1 &619394800
 GameObject:
@@ -568,7 +568,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 707574001}
-  - component: {fileID: 707574000}
   m_Layer: 0
   m_Name: PlayerManager
   m_TagString: Untagged
@@ -576,20 +575,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &707574000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 707573999}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 28ad20c0bd65fd143b7a1b6bea456cd5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Stage
-  _player: {fileID: 0}
-  _moveSpeed: 5
 --- !u!4 &707574001
 Transform:
   m_ObjectHideFlags: 0
@@ -630,7 +615,7 @@ Transform:
   m_GameObject: {fileID: 775244244}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -681,6 +666,12 @@ GameObject:
   m_Component:
   - component: {fileID: 1295404889}
   - component: {fileID: 1295404888}
+  - component: {fileID: 1295404890}
+  - component: {fileID: 1295404891}
+  - component: {fileID: 1295404895}
+  - component: {fileID: 1295404894}
+  - component: {fileID: 1295404893}
+  - component: {fileID: 1295404892}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -763,6 +754,93 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1295404890
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1295404887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d135714b1c28b643b2af5e6b7c213a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Team1.MovePlayer
+  _player: {fileID: 0}
+  _moveSpeed: 5
+--- !u!114 &1295404891
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1295404887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acefb563aad49354091cd9b8244396c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Team1.PlayerOil
+  _maxOil: 200
+  _currentOil: 100
+--- !u!114 &1295404892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1295404887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 879b40d2e7d0f9541af964c9c1da44f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Team1.PlayerHealth
+  _maxHp: 100
+--- !u!114 &1295404893
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1295404887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fad9267b18c357f4aa9bc64ceca9392d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Team1.PlayerDodge
+  _oilCost: 5
+  _invincibleDuration: 0.3
+  _spriteRenderer: {fileID: 0}
+  _invincibleColor: {r: 0.9237025, g: 0, b: 1, a: 1}
+--- !u!114 &1295404894
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1295404887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4da58c7caa8bc341bd4a1fd7f22a4f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Team1.Health
+--- !u!114 &1295404895
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1295404887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af22e25406e268345af7803f45b79826, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Team1.PlayerDash
+  _maxGauge: 50
+  _currentGauge: 50
+  _drainPerSecond: 5
+  _regenPerSecond: 5
+  _dashSpeedMultiplier: 1.5
+  _depletedSpeedMultiplier: 0.7
 --- !u!1 &1304596650
 GameObject:
   m_ObjectHideFlags: 0
@@ -890,6 +968,7 @@ MonoBehaviour:
   _moveSpeed: 3
   _arrivalThreshold: 0.05
   _detectionRange: 5
+  _minSeparationDistance: 1
 --- !u!212 &1469546971
 SpriteRenderer:
   serializedVersion: 3
