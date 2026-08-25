@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace Team1
@@ -18,8 +19,15 @@ namespace Team1
         [Header("攻撃判定")]
         [SerializeField] protected LayerMask _playerLayer;
 
+        [Header("演出")]
+        [SerializeField] protected AttackRangeIndicator _attackRangeIndicator;
+
         protected GameObject _player;
         protected Health _health;
+
+        // 予備動作(テレグラフ)や着地演出の最中は、移動・次の攻撃判定を止めるためのフラグ
+        protected bool _isBusy;
+
         private float _attackTimer;
 
         protected virtual void Awake()
@@ -54,7 +62,7 @@ namespace Team1
             float distance = Vector3.Distance(transform.position, _player.transform.position);
             if (distance <= _attackRange)
             {
-                if (_attackTimer <= 0f)
+                if (!_isBusy && _attackTimer <= 0f)
                 {
                     PerformAttack();
                     _attackTimer = _attackCooldown;
@@ -68,6 +76,11 @@ namespace Team1
 
         protected virtual void ChasePlayer()
         {
+            if (_isBusy)
+            {
+                return;
+            }
+
             transform.position = Vector3.MoveTowards(transform.position, _player.transform.position, _moveSpeed * Time.deltaTime);
         }
 
@@ -83,6 +96,26 @@ namespace Team1
                     damageable.TakeDamage(damage);
                 }
             }
+        }
+
+        // 危険範囲を予告表示してから、一定時間後にその範囲へダメージを与える
+        protected IEnumerator TelegraphAndDealDamage(int damage, float radius, float telegraphTime)
+        {
+            _isBusy = true;
+            if (_attackRangeIndicator != null)
+            {
+                _attackRangeIndicator.Show(radius);
+            }
+
+            yield return new WaitForSeconds(telegraphTime);
+
+            if (_attackRangeIndicator != null)
+            {
+                _attackRangeIndicator.Hide();
+            }
+
+            DealDamageAround(damage, radius);
+            _isBusy = false;
         }
 
         private void HandleDied()
