@@ -61,6 +61,8 @@ namespace Team1
                 return;
             }
 
+
+
             _attackTimer -= Time.deltaTime;
 
             float distance = Vector3.Distance(transform.position, _player.transform.position);

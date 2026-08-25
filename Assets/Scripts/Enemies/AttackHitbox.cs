@@ -23,6 +23,7 @@ namespace Team1
         // 指定した威力・半径で当たり判定を有効化する。有効化中に既にヒットした対象は再度ダメージを受けない
         public void Activate(int damage, float radius)
         {
+            Debug.Log("HIT");
             _damage = damage;
             _collider.radius = radius;
             _hitTargets.Clear();

@@ -10,6 +10,7 @@ namespace Team1.UI
 
         private void Awake()
         {
+             _health = GameObject.FindGameObjectWithTag("Player").GetComponent<Health>();
             Debug.Assert(_health != null, $"{nameof(_health)} is not assigned.", this);
             Debug.Assert(_slider != null, $"{nameof(_slider)} is not assigned.", this);
         }

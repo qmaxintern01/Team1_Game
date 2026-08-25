@@ -19,12 +19,19 @@ namespace Team1
         private void OnEnable()
         {
             _health.Initialize(_maxHp);
+            _health.OnDamaged += HandleDamaged;
             _health.OnDied += HandleDied;
         }
 
         private void OnDisable()
         {
+            _health.OnDamaged -= HandleDamaged;
             _health.OnDied -= HandleDied;
+        }
+
+        private void HandleDamaged(int amount)
+        {
+            Debug.Log($"敵の攻撃がプレイヤーに命中: {amount}ダメージ (残りHP: {_health.CurrentHp}/{_health.MaxHp})");
         }
 
         private void HandleDied()

@@ -8,6 +8,8 @@ namespace Team1
         [SerializeField] private float _speed = 8f;
         [SerializeField] private float _lifeTime = 5f;
         [SerializeField] private LayerMask _targetLayer;
+        // 弾の画像が右向き(0度)を基準に描かれている場合の既定値。素材の向きに合わせて調整する
+        [SerializeField] private float _rotationOffsetDegrees;
 
         private Vector3 _direction;
         private int _damage;
@@ -17,6 +19,9 @@ namespace Team1
             _direction = direction.normalized;
             _damage = damage;
             Destroy(gameObject, _lifeTime);
+
+            float angle = Mathf.Atan2(_direction.y, _direction.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0f, 0f, angle + _rotationOffsetDegrees);
         }
 
         private void Update()

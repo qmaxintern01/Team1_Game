@@ -10,6 +10,11 @@ namespace Team1
         [SerializeField] private float _detectionRange = 5f;
         [SerializeField] private float _minSeparationDistance = 1f;
 
+        [Header("見た目")]
+        [SerializeField] private Transform _visualTransform;
+        // スプライトの初期状態が上向き(0度=右向き基準で+90度)の場合の既定値。素材の向きに合わせて調整する
+        [SerializeField] private float _rotationOffsetDegrees = -90f;
+
         private GameObject _player;
         private EnemyPatrol[] _otherEnemies;
         private int _currentWaypointIndex;
@@ -20,6 +25,11 @@ namespace Team1
         private void Awake()
         {
             _player = GameObject.FindGameObjectWithTag("Player");
+
+            if (_visualTransform == null)
+            {
+                _visualTransform = transform;
+            }
 
             // エラー確認
             Debug.Assert(_waypoints != null && _waypoints.Length > 0, $"{nameof(_waypoints)} is not assigned.", this);
@@ -76,7 +86,14 @@ namespace Team1
             if (movementDelta.sqrMagnitude > 0.0001f)
             {
                 FacingDirection = ((Vector2)movementDelta).normalized;
+                RotateTowardsFacing();
             }
+        }
+
+        private void RotateTowardsFacing()
+        {
+            float angle = Mathf.Atan2(FacingDirection.y, FacingDirection.x) * Mathf.Rad2Deg;
+            _visualTransform.rotation = Quaternion.Euler(0f, 0f, angle + _rotationOffsetDegrees);
         }
 
         private void AvoidOverlap()
