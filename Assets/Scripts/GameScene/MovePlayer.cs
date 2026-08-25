@@ -8,8 +8,13 @@ namespace Team1
         [SerializeField] private GameObject _player;
         [SerializeField] private float _moveSpeed = 5f;
 
+        private const float OIL_MAX_VALUE = 200.0f;
+        private const float OIL_INITIAL_VALUE = 100.0f;
+
         private InputSystem_Actions _gameInputs;
         private Vector2 _moveInput;
+
+        private float _oilValue = OIL_INITIAL_VALUE;
 
         private void Awake()
         {
