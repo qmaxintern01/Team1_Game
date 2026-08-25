@@ -34,5 +34,15 @@ namespace Team1
                 OnDied?.Invoke();
             }
         }
+
+        public void Heal(int amount)
+        {
+            if (IsDead || amount <= 0)
+            {
+                return;
+            }
+
+            CurrentHp = Mathf.Min(MaxHp, CurrentHp + amount);
+        }
     }
 }

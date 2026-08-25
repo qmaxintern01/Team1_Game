@@ -3,8 +3,8 @@ using UnityEngine.InputSystem;
 
 namespace Team1
 {
-    // AR(アサルトライフル)。右クリック長押しでチャージし、離すと発砲する
-    [RequireComponent(typeof(PlayerOil))]
+    // AR(アサルトライフル)。右クリック長押しでチャージし、左クリックで発砲する
+    [RequireComponent(typeof(PlayerOil), typeof(PlayerSkills))]
     public class PlayerGunAttack : MonoBehaviour
     {
         [SerializeField] private PlayerWeaponSwitcher _weaponSwitcher;
@@ -13,6 +13,7 @@ namespace Team1
 
         [SerializeField] private int _damage = 5;
         [SerializeField] private int _oilCost = 1;
+        [SerializeField] private float _infiniteAmmoDamageMultiplier = 0.5f;
 
         [Header("チャージ")]
         [SerializeField] private float _chargeInterval = 1f;
@@ -22,6 +23,7 @@ namespace Team1
 
         private InputSystem_Actions _gameInputs;
         private PlayerOil _oil;
+        private PlayerSkills _skills;
 
         private bool _isCharging;
         private float _chargeTimer;
@@ -30,6 +32,7 @@ namespace Team1
         private void Awake()
         {
             _oil = GetComponent<PlayerOil>();
+            _skills = GetComponent<PlayerSkills>();
 
             if (_weaponSwitcher == null)
             {
@@ -44,20 +47,43 @@ namespace Team1
             Debug.Assert(_bulletPrefab != null, $"{nameof(_bulletPrefab)} is not assigned.", this);
         }
 
+#if UNITY_EDITOR
+        // Prefabアセットは実行時にFindできないため、未設定時はエディタ上でのみ自動検索して補完する
+        private void OnValidate()
+        {
+            if (_bulletPrefab == null)
+            {
+                foreach (string guid in UnityEditor.AssetDatabase.FindAssets("t:Prefab"))
+                {
+                    string path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
+                    GunBullet bullet = UnityEditor.AssetDatabase.LoadAssetAtPath<GunBullet>(path);
+
+                    if (bullet != null)
+                    {
+                        _bulletPrefab = bullet;
+                        break;
+                    }
+                }
+            }
+        }
+#endif
+
         private void OnEnable()
         {
             _gameInputs = new InputSystem_Actions();
             _gameInputs.Enable();
 
-            // Player/Attackは既にナイフで使用中のため、AR発砲のトリガーはUI/RightClick(右クリック長押し→離して発砲)を流用する
+            // 右クリック長押し(UI/RightClick)でチャージし、左クリック(Player/Attack、ナイフと共用)で発砲する
             _gameInputs.UI.RightClick.started += HandleChargeStart;
-            _gameInputs.UI.RightClick.canceled += HandleChargeReleaseAndFire;
+            _gameInputs.UI.RightClick.canceled += HandleChargeCancel;
+            _gameInputs.Player.Attack.performed += HandleFireInput;
         }
 
         private void OnDisable()
         {
             _gameInputs.UI.RightClick.started -= HandleChargeStart;
-            _gameInputs.UI.RightClick.canceled -= HandleChargeReleaseAndFire;
+            _gameInputs.UI.RightClick.canceled -= HandleChargeCancel;
+            _gameInputs.Player.Attack.performed -= HandleFireInput;
 
             _gameInputs.Disable();
             _gameInputs.Dispose();
@@ -98,9 +124,15 @@ namespace Team1
             _chargeLevel = 0;
         }
 
-        private void HandleChargeReleaseAndFire(InputAction.CallbackContext context)
+        private void HandleChargeCancel(InputAction.CallbackContext context)
         {
-            if (!_isCharging)
+            // 右クリックを離してもチャージレベルは保持し、発砲は左クリック(Attack)側で行う
+            _isCharging = false;
+        }
+
+        private void HandleFireInput(InputAction.CallbackContext context)
+        {
+            if (_weaponSwitcher != null && _weaponSwitcher.CurrentWeapon != WeaponType.AssaultRifle)
             {
                 return;
             }
@@ -108,6 +140,7 @@ namespace Team1
             _isCharging = false;
             Fire(_chargeLevel);
             _chargeLevel = 0;
+            _chargeTimer = 0f;
         }
 
         private void CancelCharge()
@@ -122,18 +155,28 @@ namespace Team1
         {
             if (_bulletPrefab == null)
             {
+                Debug.Log($"AR発砲失敗: 弾丸プレハブが未設定です");
+
                 return;
             }
 
+            // スキル2発動中は、オイル消費なしで威力半減の弾を撃てる
+            bool infiniteAmmo = _skills != null && _skills.IsInfiniteAmmoActive;
             int totalOilCost = _oilCost + chargeLevel * _oilCostPerChargeLevel;
 
-            if (!_oil.TrySpendOil(totalOilCost))
+            if (!infiniteAmmo && !_oil.TrySpendOil(totalOilCost))
             {
                 Debug.Log($"AR発砲失敗: オイル不足(必要{totalOilCost})");
                 return;
             }
 
             int damage = Mathf.RoundToInt(_damage + chargeLevel * _damagePerChargeLevel);
+
+            if (infiniteAmmo)
+            {
+                damage = Mathf.Max(1, Mathf.RoundToInt(damage * _infiniteAmmoDamageMultiplier));
+            }
+
             float sizeMultiplier = 1f + chargeLevel * _sizePerChargeLevel;
 
             Vector2 facing = _movePlayer != null ? _movePlayer.FacingDirection : Vector2.down;
@@ -143,7 +186,7 @@ namespace Team1
             bullet.transform.localScale *= sizeMultiplier;
             bullet.Launch(facing, damage);
 
-            Debug.Log($"AR発砲: チャージレベル{chargeLevel}, damage={damage}, sizeMultiplier={sizeMultiplier}, oilCost={totalOilCost}");
+            Debug.Log($"AR発砲: チャージレベル{chargeLevel}, damage={damage}, sizeMultiplier={sizeMultiplier}, oilCost={(infiniteAmmo ? 0 : totalOilCost)}, infiniteAmmo={infiniteAmmo}");
         }
     }
 }
