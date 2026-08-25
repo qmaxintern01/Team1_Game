@@ -66,7 +66,7 @@ namespace Team1
                 _attackRangeIndicator.Hide();
             }
 
-            DealDamageAround(_stompDamage, _stompRadius);
+            yield return ActivateHitboxRoutine(_stompDamage, _stompRadius);
             _isBusy = false;
         }
 

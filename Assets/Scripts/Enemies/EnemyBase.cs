@@ -17,7 +17,8 @@ namespace Team1
         [SerializeField] protected float _attackCooldown = 1.5f;
 
         [Header("攻撃判定")]
-        [SerializeField] protected LayerMask _playerLayer;
+        [SerializeField] protected AttackHitbox _attackHitbox;
+        [SerializeField] protected float _hitActiveDuration = 0.15f;
 
         [Header("演出")]
         [SerializeField] protected AttackRangeIndicator _attackRangeIndicator;
@@ -39,6 +40,7 @@ namespace Team1
 
             // エラー確認
             Debug.Assert(_player != null, $"{nameof(_player)} is not assigned.", this);
+            Debug.Assert(_attackHitbox != null, $"{nameof(_attackHitbox)} is not assigned.", this);
         }
 
         protected virtual void OnEnable()
@@ -88,16 +90,17 @@ namespace Team1
 
         protected abstract void PerformAttack();
 
-        protected void DealDamageAround(int damage, float radius)
+        // 攻撃判定用ヒットボックスを一定時間だけ有効化し、Collider2Dのトリガーでダメージ対象を検出する
+        protected IEnumerator ActivateHitboxRoutine(int damage, float radius)
         {
-            Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, radius, _playerLayer);
-            foreach (Collider2D hit in hits)
+            if (_attackHitbox == null)
             {
-                if (hit.TryGetComponent(out IDamageable damageable))
-                {
-                    damageable.TakeDamage(damage);
-                }
+                yield break;
             }
+
+            _attackHitbox.Activate(damage, radius);
+            yield return new WaitForSeconds(_hitActiveDuration);
+            _attackHitbox.Deactivate();
         }
 
         // 危険範囲を予告表示してから、一定時間後にその範囲へダメージを与える
@@ -116,7 +119,7 @@ namespace Team1
                 _attackRangeIndicator.Hide();
             }
 
-            DealDamageAround(damage, radius);
+            yield return ActivateHitboxRoutine(damage, radius);
             _isBusy = false;
         }
 
