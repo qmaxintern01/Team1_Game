@@ -15,6 +15,8 @@ namespace Team1
         [SerializeField] protected float _detectionRange = 8f;
         [SerializeField] protected float _attackRange = 1.5f;
         [SerializeField] protected float _attackCooldown = 1.5f;
+        [SerializeField] protected float _wallCollisionRadius = 0.45f;
+        [SerializeField] protected LayerMask _wallLayer;
 
         [Header("攻撃判定")]
         [SerializeField] protected AttackHitbox _attackHitbox;
@@ -41,6 +43,11 @@ namespace Team1
             // エラー確認
             Debug.Assert(_player != null, $"{nameof(_player)} is not assigned.", this);
             Debug.Assert(_attackHitbox != null, $"{nameof(_attackHitbox)} is not assigned.", this);
+
+            if (_wallLayer.value == 0)
+            {
+                _wallLayer = LayerMask.GetMask("Wall");
+            }
         }
 
         protected virtual void OnEnable()
@@ -87,7 +94,9 @@ namespace Team1
                 return;
             }
 
-            transform.position = Vector3.MoveTowards(transform.position, _player.transform.position, _moveSpeed * Time.deltaTime);
+            Vector3 nextPosition = Vector3.MoveTowards(transform.position, _player.transform.position, _moveSpeed * Time.deltaTime);
+            Vector3 delta = nextPosition - transform.position;
+            transform.position = WallCollision.ResolveMovement(transform.position, delta, _wallCollisionRadius, _wallLayer);
         }
 
         protected abstract void PerformAttack();

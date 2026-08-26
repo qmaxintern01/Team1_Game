@@ -9,6 +9,8 @@ namespace Team1
         [SerializeField] private float _arrivalThreshold = 0.05f;
         [SerializeField] private float _detectionRange = 5f;
         [SerializeField] private float _minSeparationDistance = 1f;
+        [SerializeField] private float _wallCollisionRadius = 0.45f;
+        [SerializeField] private LayerMask _wallLayer;
 
         [Header("見た目")]
         [SerializeField] private Transform _visualTransform;
@@ -34,6 +36,11 @@ namespace Team1
             // エラー確認
             Debug.Assert(_waypoints != null && _waypoints.Length > 0, $"{nameof(_waypoints)} is not assigned.", this);
             Debug.Assert(_player != null, $"{nameof(_player)} is not assigned.", this);
+
+            if (_wallLayer.value == 0)
+            {
+                _wallLayer = LayerMask.GetMask("Wall");
+            }
         }
 
         private void Start()
@@ -59,7 +66,8 @@ namespace Team1
         private void ChasePlayer()
         {
             Vector3 previousPosition = transform.position;
-            transform.position = Vector3.MoveTowards(transform.position, _player.transform.position, _moveSpeed * Time.deltaTime);
+            Vector3 nextPosition = Vector3.MoveTowards(transform.position, _player.transform.position, _moveSpeed * Time.deltaTime);
+            transform.position = WallCollision.ResolveMovement(previousPosition, nextPosition - previousPosition, _wallCollisionRadius, _wallLayer);
             UpdateFacingDirection(transform.position - previousPosition);
         }
 
@@ -72,7 +80,8 @@ namespace Team1
 
             Transform target = _waypoints[_currentWaypointIndex];
             Vector3 previousPosition = transform.position;
-            transform.position = Vector3.MoveTowards(transform.position, target.position, _moveSpeed * Time.deltaTime);
+            Vector3 nextPosition = Vector3.MoveTowards(transform.position, target.position, _moveSpeed * Time.deltaTime);
+            transform.position = WallCollision.ResolveMovement(previousPosition, nextPosition - previousPosition, _wallCollisionRadius, _wallLayer);
             UpdateFacingDirection(transform.position - previousPosition);
 
             if (Vector3.Distance(transform.position, target.position) <= _arrivalThreshold)
