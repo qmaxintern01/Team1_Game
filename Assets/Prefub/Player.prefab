@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 7137848960411748820}
   - component: {fileID: 6418542977642010088}
   - component: {fileID: -1172360785666130007}
+  - component: {fileID: 2855044965133907171}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -118,6 +119,10 @@ MonoBehaviour:
   _player: {fileID: 0}
   _animator: {fileID: 0}
   _moveSpeed: 5
+  _wallCollisionRadius: 0.45
+  _wallLayer:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!114 &1784059024045168216
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -245,6 +250,7 @@ MonoBehaviour:
   _chargeInterval: 1
   _damagePerChargeLevel: 1.5
   _sizePerChargeLevel: 1.5
+  _colliderSizePerChargeLevel: 0.3
   _oilCostPerChargeLevel: 1
 --- !u!114 &6418542977642010088
 MonoBehaviour:
@@ -300,3 +306,25 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: -0.02884245}
   m_Radius: 0.8996744
+--- !u!95 &2855044965133907171
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5878468911460803625}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: b1526489f9f01d84b9b25461e6cdca02, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
