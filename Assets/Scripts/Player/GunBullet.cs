@@ -9,9 +9,40 @@ namespace Team1
         [SerializeField] private float _lifeTime = 3f;
         // 弾の画像が右向き(0度)を基準に描かれている場合の既定値。素材の向きに合わせて調整する
         [SerializeField] private float _rotationOffsetDegrees;
+        // 見た目(スプライト)のみを拡大する子オブジェクト。当たり判定(ルートのCollider2D)とは別に拡大率を指定できるようにする
+        [SerializeField] private Transform _visual;
+        [SerializeField] private CircleCollider2D _collider;
 
         private Vector3 _direction;
         private int _damage;
+        private float _baseColliderRadius;
+
+        private void Awake()
+        {
+            Debug.Assert(_visual != null, $"{nameof(_visual)} is not assigned.", this);
+            Debug.Assert(_collider != null, $"{nameof(_collider)} is not assigned.", this);
+
+            if (_collider != null)
+            {
+                _baseColliderRadius = _collider.radius;
+            }
+        }
+
+        // 見た目とコライダーそれぞれの拡大率を個別に適用する。
+        // コライダーを見た目と同じ倍率で拡大すると当たり判定が過大に感じられ、
+        // 逆にまったく拡大しないと見た目に対して当たり判定が小さすぎて外れやすくなるため、別々に指定する。
+        public void SetChargeScale(float visualMultiplier, float colliderMultiplier)
+        {
+            if (_visual != null)
+            {
+                _visual.localScale = Vector3.one * visualMultiplier;
+            }
+
+            if (_collider != null)
+            {
+                _collider.radius = _baseColliderRadius * colliderMultiplier;
+            }
+        }
 
         public void Launch(Vector3 direction, int damage)
         {

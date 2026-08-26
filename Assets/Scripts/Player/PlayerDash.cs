@@ -15,14 +15,15 @@ namespace Team1
         private InputSystem_Actions _gameInputs;
         private bool _isDepleted;
 
-        private int _dashInputCounter = 0; // ダッシュ入力のカウンター
-
         public float CurrentGauge => _currentGauge;
         public float MaxGauge => _maxGauge;
         public bool IsDashing { get; private set; }
 
         // ゲージが0になった後、全回復するまで緊急回避不可
         public bool CanEmergencyDodge => !_isDepleted;
+
+        // ゲージが切れて回復中かどうか(全回復するまでtrue)
+        public bool IsDepleted => _isDepleted;
 
         public float SpeedMultiplier
         {

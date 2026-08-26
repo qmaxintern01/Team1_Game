@@ -19,6 +19,8 @@ namespace Team1
         [SerializeField] private float _chargeInterval = 1f;
         [SerializeField] private float _damagePerChargeLevel = 1.5f;
         [SerializeField] private float _sizePerChargeLevel = 1.5f;
+        // 当たり判定の拡大率は見た目より控えめにする(見た目と同率だと過大に、0だと見た目より小さすぎて外れやすくなるため)
+        [SerializeField] private float _colliderSizePerChargeLevel = 0.3f;
         [SerializeField] private int _oilCostPerChargeLevel = 1;
 
         private InputSystem_Actions _gameInputs;
@@ -177,16 +179,17 @@ namespace Team1
                 damage = Mathf.Max(1, Mathf.RoundToInt(damage * _infiniteAmmoDamageMultiplier));
             }
 
-            float sizeMultiplier = 1f + chargeLevel * _sizePerChargeLevel;
+            float visualSizeMultiplier = 1f + chargeLevel * _sizePerChargeLevel;
+            float colliderSizeMultiplier = 1f + chargeLevel * _colliderSizePerChargeLevel;
 
             Vector2 facing = _movePlayer != null ? _movePlayer.FacingDirection : Vector2.down;
             Vector3 spawnPosition = transform.position;
 
             GunBullet bullet = Instantiate(_bulletPrefab, spawnPosition, Quaternion.identity);
-            bullet.transform.localScale *= sizeMultiplier;
+            bullet.SetChargeScale(visualSizeMultiplier, colliderSizeMultiplier);
             bullet.Launch(facing, damage);
 
-            Debug.Log($"AR発砲: チャージレベル{chargeLevel}, damage={damage}, sizeMultiplier={sizeMultiplier}, oilCost={(infiniteAmmo ? 0 : totalOilCost)}, infiniteAmmo={infiniteAmmo}");
+            Debug.Log($"AR発砲: チャージレベル{chargeLevel}, damage={damage}, visualSizeMultiplier={visualSizeMultiplier}, colliderSizeMultiplier={colliderSizeMultiplier}, oilCost={(infiniteAmmo ? 0 : totalOilCost)}, infiniteAmmo={infiniteAmmo}");
         }
     }
 }
