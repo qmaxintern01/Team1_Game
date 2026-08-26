@@ -19,7 +19,7 @@ namespace Team1
 
         private void Reset()
         {
-            _maxHp = 70;
+            _maxHp = 30;
             _oilRecoveryAmount = 10;
             _attackRange = 6f;
             _detectionRange = 8f;
