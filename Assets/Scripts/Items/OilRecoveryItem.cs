@@ -21,13 +21,16 @@ namespace Team1
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (!other.CompareTag("Player") || !other.TryGetComponent(out PlayerOil playerOil))
+            if (!other.CompareTag("Player"))
             {
-                Debug.LogWarning($"OilRecoveryItem: Player component not found on {other.name}.", this);
                 return;
             }
 
-            Debug.Log($"Player touched {_recoveryAmount} oil recovery item.");
+            if (!other.TryGetComponent(out PlayerOil playerOil))
+            {
+                Debug.LogWarning($"OilRecoveryItem: PlayerOil component not found on {other.name}.", this);
+                return;
+            }
 
             playerOil.AddOil(_recoveryAmount);
             Destroy(gameObject);
