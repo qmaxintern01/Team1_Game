@@ -77,11 +77,18 @@ namespace Team1
                 int damage = isBackstab ? _damage * 2 : _damage;
 
                 hit.TryGetComponent(out Health health);
+                hit.TryGetComponent(out EnemyBase enemyBase);
                 bool wasAlive = health != null && !health.IsDead;
+
+                // 倒された際にオイルドロップを抑制するかどうかの判定に使うため、ダメージを与える前に伝えておく
+                if (enemyBase != null)
+                {
+                    enemyBase.NotifyBackstabHit(isBackstab);
+                }
 
                 damageable.TakeDamage(damage);
 
-                if (wasAlive && health.IsDead && hit.TryGetComponent(out EnemyBase enemyBase))
+                if (wasAlive && health.IsDead && enemyBase != null)
                 {
                     // ナイフでの撃破は通常の1.5倍のオイルを獲得する(EnemyBase側の等倍付与に0.5倍分を追加する)
                     int bonusOil = Mathf.RoundToInt(enemyBase.OilRecoveryAmount * 0.5f);

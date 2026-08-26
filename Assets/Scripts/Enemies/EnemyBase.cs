@@ -33,6 +33,9 @@ namespace Team1
         protected GameObject _player;
         protected Health _health;
 
+        // ナイフの背面攻撃で倒された場合はオイルドロップを行わないため、直前の被弾が背面攻撃だったかを保持する
+        private bool _lastHitWasBackstab;
+
         // 予備動作(テレグラフ)や着地演出の最中は、移動・次の攻撃判定を止めるためのフラグ
         protected bool _isBusy;
 
@@ -84,6 +87,13 @@ namespace Team1
 
         protected abstract void PerformAttack();
 
+        // 攻撃側(PlayerKnifeAttackなど)が被弾直前に呼び出し、今回の一撃が背面攻撃かどうかを伝える。
+        // HandleDied時点では既に攻撃元の情報が失われているため、ここで先に受け取っておく
+        public void NotifyBackstabHit(bool isBackstab)
+        {
+            _lastHitWasBackstab = isBackstab;
+        }
+
         // 攻撃判定用ヒットボックスを一定時間だけ有効化し、Collider2Dのトリガーでダメージ対象を検出する
         protected IEnumerator ActivateHitboxRoutine(int damage, float radius)
         {
@@ -119,7 +129,8 @@ namespace Team1
 
         private void HandleDied()
         {
-            if (_oilRecoveryAmount > 0 && _dropItemPrefab != null)
+            // 背面からの最後の一撃で倒された場合はオイルドロップしない
+            if (_oilRecoveryAmount > 0 && _dropItemPrefab != null && !_lastHitWasBackstab)
             {
                 OilRecoveryItem drop = Instantiate(_dropItemPrefab, transform.position, Quaternion.identity);
                 drop.SetRecoveryAmount(_oilRecoveryAmount);

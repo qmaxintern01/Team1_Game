@@ -10,6 +10,8 @@ namespace Team1
         // EnemyBaseが同じGameObjectにあれば、そちらのDetectionRangeを優先して使う(索敵距離の二重管理を避けるため)
         [SerializeField] private float _detectionRange = 5f;
         [SerializeField] private float _minSeparationDistance = 1f;
+        [SerializeField] private float _wallCollisionRadius = 0.45f;
+        [SerializeField] private LayerMask _wallLayer;
 
         [Header("見た目")]
         [SerializeField] private Animator _animator;
@@ -38,6 +40,11 @@ namespace Team1
             Debug.Assert(_waypoints != null && _waypoints.Length > 0, $"{nameof(_waypoints)} is not assigned.", this);
             Debug.Assert(_player != null, $"{nameof(_player)} is not assigned.", this);
             Debug.Assert(_animator != null, $"{nameof(_animator)} is not assigned.", this);
+
+            if (_wallLayer.value == 0)
+            {
+                _wallLayer = LayerMask.GetMask("Wall");
+            }
         }
 
         private void Start()
@@ -69,7 +76,17 @@ namespace Team1
         private void ChasePlayer()
         {
             Vector3 directionToTarget = _player.transform.position - transform.position;
-            transform.position = Vector3.MoveTowards(transform.position, _player.transform.position, _moveSpeed * Time.deltaTime);
+            float distanceToPlayer = directionToTarget.magnitude;
+
+            // AvoidOverlapが押し返す距離まで詰め寄ると、接近と押し返しが毎フレーム繰り返されて振動するため、
+            // 最小分離距離のところで止まるように目標地点をプレイヤーの手前に置く
+            if (distanceToPlayer > _minSeparationDistance)
+            {
+                Vector3 stopPosition = _player.transform.position - (Vector3)((Vector2)directionToTarget / distanceToPlayer * _minSeparationDistance);
+                Vector3 nextPosition = Vector3.MoveTowards(transform.position, stopPosition, _moveSpeed * Time.deltaTime);
+                transform.position = WallCollision.ResolveMovement(transform.position, nextPosition - transform.position, _wallCollisionRadius, _wallLayer);
+            }
+
             UpdateFacingDirection(directionToTarget);
         }
 
@@ -82,7 +99,8 @@ namespace Team1
 
             Transform target = _waypoints[_currentWaypointIndex];
             Vector3 directionToTarget = target.position - transform.position;
-            transform.position = Vector3.MoveTowards(transform.position, target.position, _moveSpeed * Time.deltaTime);
+            Vector3 nextPosition = Vector3.MoveTowards(transform.position, target.position, _moveSpeed * Time.deltaTime);
+            transform.position = WallCollision.ResolveMovement(transform.position, nextPosition - transform.position, _wallCollisionRadius, _wallLayer);
             UpdateFacingDirection(directionToTarget);
 
             if (Vector3.Distance(transform.position, target.position) <= _arrivalThreshold)
@@ -104,7 +122,9 @@ namespace Team1
             ApplyAnimatorDirection(isMoving);
         }
 
-        // 移動方向をAnimatorへ渡し、向きの切り替えをAnimation側(ブレンドツリー等)に任せる
+        // 移動方向をAnimatorへ渡し、向きの切り替えをAnimation側(ステートマシン)に任せる。
+        // XY両方を同時に渡すと斜め移動時にLeft/Right⇔Up/Downのステートを1フレームごとに往復してしまうため、
+        // 主軸(絶対値が大きい方)だけを渡し、もう片方は必ず0にして遷移条件が同時に真になるのを防ぐ
         private void ApplyAnimatorDirection(bool isMoving)
         {
             if (_animator == null)
@@ -112,8 +132,20 @@ namespace Team1
                 return;
             }
 
-            _animator.SetFloat("MoveX", FacingDirection.x);
-            _animator.SetFloat("MoveY", FacingDirection.y);
+            float moveX = 0f;
+            float moveY = 0f;
+
+            if (Mathf.Abs(FacingDirection.x) >= Mathf.Abs(FacingDirection.y))
+            {
+                moveX = Mathf.Sign(FacingDirection.x);
+            }
+            else
+            {
+                moveY = Mathf.Sign(FacingDirection.y);
+            }
+
+            _animator.SetFloat("MoveX", moveX);
+            _animator.SetFloat("MoveY", moveY);
             _animator.SetBool("isMove", isMoving);
         }
 
