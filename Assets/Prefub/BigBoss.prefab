@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6683544292233498157}
   - component: {fileID: 6370370714861538055}
+  - component: {fileID: 2446957231931751283}
   m_Layer: 0
   m_Name: Boss
   m_TagString: Untagged
@@ -81,8 +82,8 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 75f5f34dc1b5347e0b8351032682f224, type: 3}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Sprite: {fileID: -6210261254661933376, guid: 1ccd614b0ce00ee469c0105c3feb4d49, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -107,7 +108,6 @@ GameObject:
   - component: {fileID: 8558984440570894221}
   - component: {fileID: 9200000000000000005}
   - component: {fileID: 5694946991306709404}
-  - component: {fileID: 2446957231931751283}
   m_Layer: 7
   m_Name: BigBoss
   m_TagString: Enemy
@@ -212,7 +212,11 @@ MonoBehaviour:
   _arrivalThreshold: 0.05
   _detectionRange: 5
   _minSeparationDistance: 1
-  _animator: {fileID: 0}
+  _wallCollisionRadius: 0.45
+  _wallLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  _animator: {fileID: 2446957231931751283}
 --- !u!114 &6449689823896688469
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -231,6 +235,10 @@ MonoBehaviour:
   _detectionRange: 12
   _attackRange: 1.5
   _attackCooldown: 1.5
+  _wallCollisionRadius: 0.45
+  _wallLayer:
+    serializedVersion: 2
+    m_Bits: 0
   _attackHitbox: {fileID: 9200000000000000004}
   _hitActiveDuration: 0.15
   _attackRangeIndicator: {fileID: 0}
@@ -328,10 +336,10 @@ Animator:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 297833184937203806}
+  m_GameObject: {fileID: 177086874019155916}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: c153283e61a0a804aaf56616bee15bd8, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

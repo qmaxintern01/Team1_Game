@@ -58,6 +58,7 @@ namespace Team1
             }
 
             CurrentHp = Mathf.Min(MaxHp, CurrentHp + amount);
+            OnHpChanged?.Invoke(CurrentHp, MaxHp);
         }
     }
 }
