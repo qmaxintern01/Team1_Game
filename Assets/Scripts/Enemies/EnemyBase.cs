@@ -29,11 +29,16 @@ namespace Team1
 
         [Header("演出")]
         [SerializeField] protected AttackRangeIndicator _attackRangeIndicator;
+        [SerializeField] protected SpriteRenderer _spriteRenderer;
+        [SerializeField] protected Color _damageFlashColor = Color.red;
+        [SerializeField] protected float _damageFlashDuration = 0.1f;
 
         public int OilRecoveryAmount => _oilRecoveryAmount;
 
         protected GameObject _player;
         protected Health _health;
+        private Color _defaultSpriteColor;
+        private Coroutine _damageFlashRoutine;
 
         // 予備動作(テレグラフ)や着地演出の最中は、移動・次の攻撃判定を止めるためのフラグ
         protected bool _isBusy;
@@ -48,9 +53,27 @@ namespace Team1
             _player = GameObject.FindGameObjectWithTag("Player");
             _health = GetComponent<Health>();
 
+            if (_spriteRenderer == null)
+            {
+                // 見た目に使われていない(Enabled=false)SpriteRendererを誤って拾わないようにする
+                foreach (SpriteRenderer renderer in GetComponentsInChildren<SpriteRenderer>(true))
+                {
+                    if (renderer.enabled)
+                    {
+                        _spriteRenderer = renderer;
+                        break;
+                    }
+                }
+            }
+
             // エラー確認
             Debug.Assert(_player != null, $"{nameof(_player)} is not assigned.", this);
             Debug.Assert(_attackHitbox != null, $"{nameof(_attackHitbox)} is not assigned.", this);
+
+            if (_spriteRenderer != null)
+            {
+                _defaultSpriteColor = _spriteRenderer.color;
+            }
 
             if (_wallLayer.value == 0)
             {
@@ -62,11 +85,13 @@ namespace Team1
         {
             _health.Initialize(_maxHp);
             _health.OnDied += HandleDied;
+            _health.OnDamaged += HandleDamaged;
         }
 
         protected virtual void OnDisable()
         {
             _health.OnDied -= HandleDied;
+            _health.OnDamaged -= HandleDamaged;
         }
 
         protected virtual void Update()
@@ -122,6 +147,29 @@ namespace Team1
 
             yield return ActivateHitboxRoutine(damage, radius);
             _isBusy = false;
+        }
+
+        private void HandleDamaged(int amount)
+        {
+            if (_spriteRenderer == null)
+            {
+                return;
+            }
+
+            if (_damageFlashRoutine != null)
+            {
+                StopCoroutine(_damageFlashRoutine);
+            }
+
+            _damageFlashRoutine = StartCoroutine(DamageFlashRoutine());
+        }
+
+        private IEnumerator DamageFlashRoutine()
+        {
+            _spriteRenderer.color = _damageFlashColor;
+            yield return new WaitForSeconds(_damageFlashDuration);
+            _spriteRenderer.color = _defaultSpriteColor;
+            _damageFlashRoutine = null;
         }
 
         private void HandleDied()
