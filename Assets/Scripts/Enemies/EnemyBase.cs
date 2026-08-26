@@ -10,11 +10,16 @@ namespace Team1
         [SerializeField] protected int _maxHp = 70;
         [SerializeField] protected int _oilRecoveryAmount = 10;
 
+        [Header("ドロップアイテム")]
+        [SerializeField] protected OilRecoveryItem _dropItemPrefab;
+
         [Header("移動・索敵")]
-        [SerializeField] protected float _moveSpeed = 2f;
         [SerializeField] protected float _detectionRange = 8f;
         [SerializeField] protected float _attackRange = 1.5f;
         [SerializeField] protected float _attackCooldown = 1.5f;
+
+        // EnemyPatrolが追跡開始距離として参照する。索敵距離の情報源をここに一本化する
+        public float DetectionRange => _detectionRange;
 
         [Header("攻撃判定")]
         [SerializeField] protected AttackHitbox _attackHitbox;
@@ -30,6 +35,9 @@ namespace Team1
 
         // 予備動作(テレグラフ)や着地演出の最中は、移動・次の攻撃判定を止めるためのフラグ
         protected bool _isBusy;
+
+        // テレグラフ演出やジャンプ攻撃など、EnemyBase側が直接transformを動かしている間はEnemyPatrolの移動を止めるために公開する
+        public bool IsBusy => _isBusy;
 
         private float _attackTimer;
 
@@ -65,29 +73,13 @@ namespace Team1
 
             _attackTimer -= Time.deltaTime;
 
+            // 移動はEnemyPatrolが一元管理するため、ここでは攻撃可否の判定のみ行う
             float distance = Vector3.Distance(transform.position, _player.transform.position);
-            if (distance <= _attackRange)
+            if (distance <= _attackRange && !_isBusy && _attackTimer <= 0f)
             {
-                if (!_isBusy && _attackTimer <= 0f)
-                {
-                    PerformAttack();
-                    _attackTimer = _attackCooldown;
-                }
+                PerformAttack();
+                _attackTimer = _attackCooldown;
             }
-            else if (distance <= _detectionRange)
-            {
-                ChasePlayer();
-            }
-        }
-
-        protected virtual void ChasePlayer()
-        {
-            if (_isBusy)
-            {
-                return;
-            }
-
-            transform.position = Vector3.MoveTowards(transform.position, _player.transform.position, _moveSpeed * Time.deltaTime);
         }
 
         protected abstract void PerformAttack();
@@ -127,9 +119,10 @@ namespace Team1
 
         private void HandleDied()
         {
-            if (_oilRecoveryAmount > 0 && _player != null && _player.TryGetComponent(out PlayerOil playerOil))
+            if (_oilRecoveryAmount > 0 && _dropItemPrefab != null)
             {
-                playerOil.AddOil(_oilRecoveryAmount);
+                OilRecoveryItem drop = Instantiate(_dropItemPrefab, transform.position, Quaternion.identity);
+                drop.SetRecoveryAmount(_oilRecoveryAmount);
             }
 
             Destroy(gameObject);

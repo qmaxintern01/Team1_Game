@@ -7,17 +7,19 @@ namespace Team1
         [SerializeField] private Transform[] _waypoints;
         [SerializeField] private float _moveSpeed = 3f;
         [SerializeField] private float _arrivalThreshold = 0.05f;
+        // EnemyBaseが同じGameObjectにあれば、そちらのDetectionRangeを優先して使う(索敵距離の二重管理を避けるため)
         [SerializeField] private float _detectionRange = 5f;
         [SerializeField] private float _minSeparationDistance = 1f;
 
         [Header("見た目")]
-        [SerializeField] private Transform _visualTransform;
-        // スプライトの初期状態が上向き(0度=右向き基準で+90度)の場合の既定値。素材の向きに合わせて調整する
-        [SerializeField] private float _rotationOffsetDegrees = -90f;
+        [SerializeField] private Animator _animator;
 
         private GameObject _player;
+        private EnemyBase _enemyBase;
         private EnemyPatrol[] _otherEnemies;
         private int _currentWaypointIndex;
+
+        private float DetectionRange => _enemyBase != null ? _enemyBase.DetectionRange : _detectionRange;
 
         // 追跡・巡回移動の方向を保持し、静止中も直前の向きを維持する
         public Vector2 FacingDirection { get; private set; } = Vector2.down;
@@ -25,15 +27,17 @@ namespace Team1
         private void Awake()
         {
             _player = GameObject.FindGameObjectWithTag("Player");
+            _enemyBase = GetComponent<EnemyBase>();
 
-            if (_visualTransform == null)
+            if (_animator == null)
             {
-                _visualTransform = transform;
+                _animator = GetComponentInChildren<Animator>();
             }
 
             // エラー確認
             Debug.Assert(_waypoints != null && _waypoints.Length > 0, $"{nameof(_waypoints)} is not assigned.", this);
             Debug.Assert(_player != null, $"{nameof(_player)} is not assigned.", this);
+            Debug.Assert(_animator != null, $"{nameof(_animator)} is not assigned.", this);
         }
 
         private void Start()
@@ -44,7 +48,13 @@ namespace Team1
 
         private void Update()
         {
-            if (_player != null && Vector3.Distance(transform.position, _player.transform.position) <= _detectionRange)
+            // テレグラフ演出やジャンプ攻撃などでEnemyBase側が直接transformを動かしている間は移動を止める
+            if (_enemyBase != null && _enemyBase.IsBusy)
+            {
+                return;
+            }
+
+            if (_player != null && Vector3.Distance(transform.position, _player.transform.position) <= DetectionRange)
             {
                 ChasePlayer();
             }
@@ -58,9 +68,9 @@ namespace Team1
 
         private void ChasePlayer()
         {
-            Vector3 previousPosition = transform.position;
+            Vector3 directionToTarget = _player.transform.position - transform.position;
             transform.position = Vector3.MoveTowards(transform.position, _player.transform.position, _moveSpeed * Time.deltaTime);
-            UpdateFacingDirection(transform.position - previousPosition);
+            UpdateFacingDirection(directionToTarget);
         }
 
         private void Patrol()
@@ -71,9 +81,9 @@ namespace Team1
             }
 
             Transform target = _waypoints[_currentWaypointIndex];
-            Vector3 previousPosition = transform.position;
+            Vector3 directionToTarget = target.position - transform.position;
             transform.position = Vector3.MoveTowards(transform.position, target.position, _moveSpeed * Time.deltaTime);
-            UpdateFacingDirection(transform.position - previousPosition);
+            UpdateFacingDirection(directionToTarget);
 
             if (Vector3.Distance(transform.position, target.position) <= _arrivalThreshold)
             {
@@ -81,19 +91,30 @@ namespace Team1
             }
         }
 
-        private void UpdateFacingDirection(Vector3 movementDelta)
+        // AvoidOverlapによる位置補正のノイズを拾わないよう、実際の移動量ではなく目標へ向かう方向を使う
+        private void UpdateFacingDirection(Vector3 directionToTarget)
         {
-            if (movementDelta.sqrMagnitude > 0.0001f)
+            bool isMoving = directionToTarget.sqrMagnitude > 0.0001f;
+
+            if (isMoving)
             {
-                FacingDirection = ((Vector2)movementDelta).normalized;
-                RotateTowardsFacing();
+                FacingDirection = ((Vector2)directionToTarget).normalized;
             }
+
+            ApplyAnimatorDirection(isMoving);
         }
 
-        private void RotateTowardsFacing()
+        // 移動方向をAnimatorへ渡し、向きの切り替えをAnimation側(ブレンドツリー等)に任せる
+        private void ApplyAnimatorDirection(bool isMoving)
         {
-            float angle = Mathf.Atan2(FacingDirection.y, FacingDirection.x) * Mathf.Rad2Deg;
-            _visualTransform.rotation = Quaternion.Euler(0f, 0f, angle + _rotationOffsetDegrees);
+            if (_animator == null)
+            {
+                return;
+            }
+
+            _animator.SetFloat("MoveX", FacingDirection.x);
+            _animator.SetFloat("MoveY", FacingDirection.y);
+            _animator.SetBool("isMove", isMoving);
         }
 
         private void AvoidOverlap()

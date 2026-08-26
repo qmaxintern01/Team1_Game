@@ -22,6 +22,9 @@ namespace Team1
         // ゲージが0になった後、全回復するまで緊急回避不可
         public bool CanEmergencyDodge => !_isDepleted;
 
+        // ゲージが切れて回復中かどうか(全回復するまでtrue)
+        public bool IsDepleted => _isDepleted;
+
         public float SpeedMultiplier
         {
             get

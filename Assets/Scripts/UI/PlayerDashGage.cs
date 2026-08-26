@@ -8,6 +8,9 @@ namespace Team1
         [SerializeField] private PlayerDash _playerDash;
         [SerializeField] private Image _dashGageImage;
 
+        [SerializeField] private Color _normalColor = Color.white;
+        [SerializeField] private Color _depletedColor = Color.red;
+
         [SerializeField]private float _dashInputCounter = 3.0f;
         private float _counter = 3.0f; // ダッシュ入力のカウンター
 
@@ -43,6 +46,7 @@ namespace Team1
             }
 
             _dashGageImage.fillAmount = _playerDash.CurrentGauge / _playerDash.MaxGauge;
+            _dashGageImage.color = _playerDash.IsDepleted ? _depletedColor : _normalColor;
         }
     }
 }

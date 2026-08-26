@@ -92,8 +92,8 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0.018116832, g: 1, b: 0, a: 1}
+  m_Sprite: {fileID: -4238648597835710866, guid: b4baa690e0c2ef741b32e083514d7ea7, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -116,6 +116,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Team1.MovePlayer
   _player: {fileID: 0}
+  _animator: {fileID: 0}
   _moveSpeed: 5
 --- !u!114 &1784059024045168216
 MonoBehaviour:
@@ -177,7 +178,7 @@ MonoBehaviour:
   _oilCost: 5
   _invincibleDuration: 0.3
   _spriteRenderer: {fileID: 0}
-  _invincibleColor: {r: 0.9237025, g: 0, b: 1, a: 1}
+  _invincibleColor: {r: 1, g: 0, b: 0.099629045, a: 1}
 --- !u!114 &4940357274918684951
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -297,5 +298,5 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Radius: 0.5
+  m_Offset: {x: 0, y: -0.02884245}
+  m_Radius: 0.8996744

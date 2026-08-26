@@ -52,6 +52,7 @@ namespace Team1
 
             // 設定された入力値を適用
             _moveInput = _gameInputs.Player.Move.ReadValue<Vector2>();
+            float speedMultiplier = _dash != null ? _dash.SpeedMultiplier : 1f;
 
             if (_moveInput.sqrMagnitude > 0.0001f)
             {
@@ -60,6 +61,8 @@ namespace Team1
                 _animator.SetFloat("MoveX", FacingDirection.x);
                 _animator.SetFloat("MoveY", FacingDirection.y);
                 _animator.SetBool("isMove", true);
+                // 移動速度倍率(ダッシュ/ゲージ切れ)に合わせて歩行アニメーションの再生速度も変える
+                _animator.speed = speedMultiplier;
             }
             else
             {
@@ -67,9 +70,9 @@ namespace Team1
                 _animator.SetFloat("MoveX", 0.0f);
                 _animator.SetFloat("MoveY", 0.0f);
                 _animator.SetBool("isMove", false);
+                _animator.speed = 1f;
             }
 
-            float speedMultiplier = _dash != null ? _dash.SpeedMultiplier : 1f;
             _player.transform.position += new Vector3(_moveInput.x, _moveInput.y, 0) * _moveSpeed * speedMultiplier * Time.deltaTime;
         }
     }
