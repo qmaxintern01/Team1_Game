@@ -307,7 +307,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
+  m_Sprite: {fileID: -8481318687205100491, guid: 756701c4361e7324b9d4fa9d0d4cb317, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -359,6 +359,10 @@ MonoBehaviour:
   _detectionRange: 10
   _attackRange: 1.5
   _attackCooldown: 1.5
+  _wallCollisionRadius: 0.45
+  _wallLayer:
+    serializedVersion: 2
+    m_Bits: 0
   _attackHitbox: {fileID: 9100000000000000004}
   _hitActiveDuration: 0.15
   _attackRangeIndicator: {fileID: 0}
