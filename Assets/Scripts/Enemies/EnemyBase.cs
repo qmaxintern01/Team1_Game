@@ -40,6 +40,8 @@ namespace Team1
         private Color _defaultSpriteColor;
         private Coroutine _damageFlashRoutine;
 
+        private bool _lastHitWasBackstab;
+
         // 予備動作(テレグラフ)や着地演出の最中は、移動・次の攻撃判定を止めるためのフラグ
         protected bool _isBusy;
 
@@ -92,6 +94,11 @@ namespace Team1
         {
             _health.OnDied -= HandleDied;
             _health.OnDamaged -= HandleDamaged;
+        }
+
+        public void NotifyBackstabHit(bool isBackstab)
+        {
+            _lastHitWasBackstab = isBackstab;
         }
 
         protected virtual void Update()
