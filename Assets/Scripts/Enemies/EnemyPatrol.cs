@@ -12,6 +12,8 @@ namespace Team1
         [SerializeField] private float _minSeparationDistance = 1f;
         [SerializeField] private float _wallCollisionRadius = 0.45f;
         [SerializeField] private LayerMask _wallLayer;
+        // 1秒あたりに旋回できる最大角度。これより速くプレイヤーが横移動すると、旋回が追いつかず背後に回り込める
+        [SerializeField] private float _turnSpeedDegreesPerSecond = 180f;
 
         [Header("見た目")]
         [SerializeField] private Animator _animator;
@@ -25,6 +27,9 @@ namespace Team1
 
         // 追跡・巡回移動の方向を保持し、静止中も直前の向きを維持する
         public Vector2 FacingDirection { get; private set; } = Vector2.down;
+
+        // FacingDirectionを上下左右4方向に丸めたもの。Animatorのスプライト切り替えと同じ値
+        public Vector2 DiscreteFacingDirection { get; private set; } = Vector2.down;
 
         private void Awake()
         {
@@ -116,15 +121,24 @@ namespace Team1
 
             if (isMoving)
             {
-                FacingDirection = ((Vector2)directionToTarget).normalized;
+                Vector2 targetDirection = ((Vector2)directionToTarget).normalized;
+                float currentAngle = Mathf.Atan2(FacingDirection.y, FacingDirection.x) * Mathf.Rad2Deg;
+                float targetAngle = Mathf.Atan2(targetDirection.y, targetDirection.x) * Mathf.Rad2Deg;
+                float nextAngle = Mathf.MoveTowardsAngle(currentAngle, targetAngle, _turnSpeedDegreesPerSecond * Time.deltaTime);
+                FacingDirection = new Vector2(Mathf.Cos(nextAngle * Mathf.Deg2Rad), Mathf.Sin(nextAngle * Mathf.Deg2Rad));
+
+                // 主軸(絶対値が大きい方)だけを残し、もう片方を0にして上下左右4方向に丸める
+                DiscreteFacingDirection = Mathf.Abs(FacingDirection.x) >= Mathf.Abs(FacingDirection.y)
+                    ? new Vector2(Mathf.Sign(FacingDirection.x), 0f)
+                    : new Vector2(0f, Mathf.Sign(FacingDirection.y));
             }
 
             ApplyAnimatorDirection(isMoving);
         }
 
-        // 移動方向をAnimatorへ渡し、向きの切り替えをAnimation側(ステートマシン)に任せる。
+        // DiscreteFacingDirectionをAnimatorへ渡し、向きの切り替えをAnimation側(ステートマシン)に任せる。
         // XY両方を同時に渡すと斜め移動時にLeft/Right⇔Up/Downのステートを1フレームごとに往復してしまうため、
-        // 主軸(絶対値が大きい方)だけを渡し、もう片方は必ず0にして遷移条件が同時に真になるのを防ぐ
+        // 主軸だけを渡し、もう片方は必ず0にして遷移条件が同時に真になるのを防ぐ(DiscreteFacingDirection側で丸め済み)
         private void ApplyAnimatorDirection(bool isMoving)
         {
             if (_animator == null)
@@ -132,20 +146,8 @@ namespace Team1
                 return;
             }
 
-            float moveX = 0f;
-            float moveY = 0f;
-
-            if (Mathf.Abs(FacingDirection.x) >= Mathf.Abs(FacingDirection.y))
-            {
-                moveX = Mathf.Sign(FacingDirection.x);
-            }
-            else
-            {
-                moveY = Mathf.Sign(FacingDirection.y);
-            }
-
-            _animator.SetFloat("MoveX", moveX);
-            _animator.SetFloat("MoveY", moveY);
+            _animator.SetFloat("MoveX", DiscreteFacingDirection.x);
+            _animator.SetFloat("MoveY", DiscreteFacingDirection.y);
             _animator.SetBool("isMove", isMoving);
         }
 
@@ -185,5 +187,16 @@ namespace Team1
             Vector3 pushDirection = offset / distance;
             transform.position += pushDirection * (_minSeparationDistance - distance);
         }
+
+#if UNITY_EDITOR
+        // 向きをSceneビューで確認するためのデバッグ表示。シアン=連続値、マゼンタ=攻撃判定に使う4方向丸め後
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawRay(transform.position, (Vector3)FacingDirection * 2f);
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawRay(transform.position, (Vector3)DiscreteFacingDirection * 1.6f);
+        }
+#endif
     }
 }

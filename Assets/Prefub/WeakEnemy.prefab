@@ -209,6 +209,7 @@ MonoBehaviour:
   _targetLayer:
     serializedVersion: 2
     m_Bits: 64
+  _frontHalfAngle: 90
 --- !u!1 &4235047725262009312
 GameObject:
   m_ObjectHideFlags: 0
@@ -403,6 +404,11 @@ MonoBehaviour:
   _arrivalThreshold: 0.05
   _detectionRange: 5
   _minSeparationDistance: 1
+  _wallCollisionRadius: 0.45
+  _wallLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  _turnSpeedDegreesPerSecond: 180
   _animator: {fileID: 0}
 --- !u!114 &3710812408757252495
 MonoBehaviour:
@@ -416,15 +422,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 803b90d78cc5c6d42b1258edeb80c30b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Team1.WeakEnemy
-  _maxHp: 70
+  _maxHp: 30
   _oilRecoveryAmount: 10
-  _dropItemPrefab: {fileID: -4191116266018124196, guid: ef6b16b4930bf4244b880e7a7b5fb565, type: 3}
+  _dropItemPrefab: {fileID: -4191116266018124196, guid: ede74c7e864500c4f92a5388fbce7171, type: 3}
   _detectionRange: 8
   _attackRange: 6
   _attackCooldown: 1.5
-  _attackHitbox: {fileID: 0}
+  _wallCollisionRadius: 0.45
+  _wallLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  _attackHitbox: {fileID: 573181822423184438}
   _hitActiveDuration: 0.15
   _attackRangeIndicator: {fileID: 0}
+  _spriteRenderer: {fileID: 0}
+  _damageFlashColor: {r: 1, g: 0, b: 0, a: 1}
+  _damageFlashDuration: 0.1
   _projectilePrefab: {fileID: 4278557381162467167, guid: eebc8751038d5af40bb506198b194461, type: 3}
   _gunDamage: 2
 --- !u!114 &3106575444203946825

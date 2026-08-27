@@ -37,6 +37,7 @@ namespace Team1
 
         protected GameObject _player;
         protected Health _health;
+        private IFacingDirection _facingDirection;
         private Color _defaultSpriteColor;
         private Coroutine _damageFlashRoutine;
 
@@ -54,6 +55,7 @@ namespace Team1
         {
             _player = GameObject.FindGameObjectWithTag("Player");
             _health = GetComponent<Health>();
+            _facingDirection = GetComponent<IFacingDirection>();
 
             if (_spriteRenderer == null)
             {
@@ -123,26 +125,38 @@ namespace Team1
 
         protected abstract void PerformAttack();
 
+        // 予兆表示・攻撃判定の双方で同じ向きを使うための取得口。IsBusy中はEnemyPatrolが向き更新を止めるため、
+        // 攻撃を通して(予兆〜着弾まで)一定の値になる。
+        // スプライトが実際に表示している上下左右4方向(DiscreteFacingDirection)を使うことで、見た目とズレないようにする
+        protected Vector2 GetFacingDirection()
+        {
+            return _facingDirection != null ? _facingDirection.DiscreteFacingDirection : Vector2.up;
+        }
+
         // 攻撃判定用ヒットボックスを一定時間だけ有効化し、Collider2Dのトリガーでダメージ対象を検出する
-        protected IEnumerator ActivateHitboxRoutine(int damage, float radius)
+        protected IEnumerator ActivateHitboxRoutine(int damage, float radius, Vector2 facingDirection)
         {
             if (_attackHitbox == null)
             {
                 yield break;
             }
 
-            _attackHitbox.Activate(damage, radius);
+            _attackHitbox.Activate(damage, radius, facingDirection);
             yield return new WaitForSeconds(_hitActiveDuration);
             _attackHitbox.Deactivate();
         }
 
         // 危険範囲を予告表示してから、一定時間後にその範囲へダメージを与える
-        protected IEnumerator TelegraphAndDealDamage(int damage, float radius, float telegraphTime)
+        // recoveryTime: 大技の後の隙(ダウン・硬直)。IsBusyがtrueの間はEnemyPatrolの追尾・旋回が停止するため、
+        // ここを延ばすほどプレイヤーが横移動で背後に回り込む猶予が長くなる
+        protected IEnumerator TelegraphAndDealDamage(int damage, float radius, float telegraphTime, float recoveryTime = 0f)
         {
             _isBusy = true;
+            // 予兆表示と実際の判定がズレないよう、この攻撃を通して使う向きをここで一度だけ取得する
+            Vector2 facingDirection = GetFacingDirection();
             if (_attackRangeIndicator != null)
             {
-                _attackRangeIndicator.Show(radius);
+                _attackRangeIndicator.Show(radius, facingDirection);
             }
 
             yield return new WaitForSeconds(telegraphTime);
@@ -152,7 +166,13 @@ namespace Team1
                 _attackRangeIndicator.Hide();
             }
 
-            yield return ActivateHitboxRoutine(damage, radius);
+            yield return ActivateHitboxRoutine(damage, radius, facingDirection);
+
+            if (recoveryTime > 0f)
+            {
+                yield return new WaitForSeconds(recoveryTime);
+            }
+
             _isBusy = false;
         }
 

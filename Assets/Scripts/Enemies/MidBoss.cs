@@ -14,6 +14,7 @@ namespace Team1
         [SerializeField] private int _chargeDamage = 10;
         [SerializeField] private float _chargeRadius = 2f;
         [SerializeField] private float _chargeWindUpTime = 1f;
+        [SerializeField] private float _chargeRecoveryTime = 0.4f;
         [SerializeField, Range(0f, 1f)] private float _chargeAttackChance = 0.3f;
 
         private void Reset()
@@ -28,7 +29,7 @@ namespace Team1
         {
             if (Random.value < _chargeAttackChance)
             {
-                StartCoroutine(TelegraphAndDealDamage(_chargeDamage, _chargeRadius, _chargeWindUpTime));
+                StartCoroutine(TelegraphAndDealDamage(_chargeDamage, _chargeRadius, _chargeWindUpTime, _chargeRecoveryTime));
             }
             else
             {
