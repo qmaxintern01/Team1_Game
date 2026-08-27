@@ -65,6 +65,7 @@ namespace Team1.EditorTools
             rankPanelRect.anchoredPosition = new Vector2(0f, -160f);
             rankPanelRect.sizeDelta = new Vector2(900f, 220f);
 
+            var rankImage = CreateRankImage(rankPanel.transform);
             var rankText = CreateTextObject(rankPanel.transform, "RankText", "S", 140, Color.white, TextAnchor.MiddleCenter,
                 new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0f, 30f), new Vector2(300f, 160f));
             var titleText = CreateTextObject(rankPanel.transform, "TitleText", "称号", 32, new Color(0.95f, 0.85f, 0.6f), TextAnchor.MiddleCenter,
@@ -114,6 +115,7 @@ namespace Team1.EditorTools
             var so = new SerializedObject(resultController);
             so.FindProperty("_config").objectReferenceValue = config;
             so.FindProperty("_rankText").objectReferenceValue = rankText;
+            so.FindProperty("_rankImage").objectReferenceValue = rankImage;
             so.FindProperty("_titleText").objectReferenceValue = titleText;
             so.FindProperty("_totalGaugeFill").objectReferenceValue = totalGaugeFill;
             so.FindProperty("_totalScoreText").objectReferenceValue = totalScoreText;
@@ -202,6 +204,22 @@ namespace Team1.EditorTools
             text.horizontalOverflow = HorizontalWrapMode.Overflow;
             text.verticalOverflow = VerticalWrapMode.Overflow;
             return text;
+        }
+
+        private static Image CreateRankImage(Transform parent)
+        {
+            // ランク別スプライトは_rankSprites(D,C,B,A,S順)にアセットを割り当てるまで非表示にしておく
+            var go = CreateUIObject("RankImage", parent);
+            var rect = go.GetComponent<RectTransform>();
+            rect.anchorMin = new Vector2(0.5f, 0.5f);
+            rect.anchorMax = new Vector2(0.5f, 0.5f);
+            rect.anchoredPosition = new Vector2(0f, 30f);
+            rect.sizeDelta = new Vector2(200f, 200f);
+
+            var image = go.AddComponent<Image>();
+            image.preserveAspect = true;
+            image.enabled = false;
+            return image;
         }
 
         private static Image CreateFilledImage(Transform parent, Color color)

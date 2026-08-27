@@ -41,6 +41,9 @@ namespace Team1.UI
         [Header("ランク表示")]
         [SerializeField] private Text _rankText;
         [SerializeField] private Text _titleText;
+        [SerializeField] private Image _rankImage;
+        [Tooltip("ResultRankの順(D,C,B,A,S)に対応するランク画像")]
+        [SerializeField] private Sprite[] _rankSprites = new Sprite[5];
 
         [Header("総合ゲージ")]
         [SerializeField] private Image _totalGaugeFill;
@@ -138,6 +141,11 @@ namespace Team1.UI
             {
                 _adviceText.text = string.Empty;
             }
+
+            if (_rankImage != null)
+            {
+                _rankImage.enabled = false;
+            }
         }
 
         // ランク・称号・次回の目標は、全ゲージ(内訳5項目+総合)の演出が止まってから表示する
@@ -149,6 +157,13 @@ namespace Team1.UI
             {
                 _rankText.text = result.Rank.ToString();
                 _rankText.color = RankColors[(int)result.Rank];
+            }
+
+            if (_rankImage != null)
+            {
+                Sprite sprite = GetRankSprite(result.Rank);
+                _rankImage.sprite = sprite;
+                _rankImage.enabled = sprite != null;
             }
 
             if (_titleText != null)
@@ -208,6 +223,17 @@ namespace Team1.UI
             {
                 label.text = $"{prefix} {Mathf.RoundToInt(value)}";
             }
+        }
+
+        private Sprite GetRankSprite(ResultRank rank)
+        {
+            int index = (int)rank;
+            if (_rankSprites == null || index < 0 || index >= _rankSprites.Length)
+            {
+                return null;
+            }
+
+            return _rankSprites[index];
         }
 
         private void Retry()
