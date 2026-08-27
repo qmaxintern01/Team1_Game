@@ -85,6 +85,11 @@ namespace Team1
             {
                 _wallLayer = LayerMask.GetMask("Wall");
             }
+
+            if (!TryGetComponent<MinimapEntityMarker>(out _))
+            {
+                gameObject.AddComponent<MinimapEntityMarker>();
+            }
         }
 
         protected virtual void OnEnable()
