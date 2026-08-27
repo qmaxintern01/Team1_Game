@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6683544292233498157}
   - component: {fileID: 6370370714861538055}
-  - component: {fileID: 2446957231931751283}
   m_Layer: 0
   m_Name: Boss
   m_TagString: Untagged
@@ -41,7 +40,7 @@ SpriteRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 177086874019155916}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -82,8 +81,8 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -6210261254661933376, guid: 1ccd614b0ce00ee469c0105c3feb4d49, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Sprite: {fileID: 7482667652216324306, guid: 75f5f34dc1b5347e0b8351032682f224, type: 3}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -93,28 +92,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
   m_BlendShapeWeights: []
---- !u!95 &2446957231931751283
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 177086874019155916}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: c153283e61a0a804aaf56616bee15bd8, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &297833184937203806
 GameObject:
   m_ObjectHideFlags: 0
@@ -130,6 +107,7 @@ GameObject:
   - component: {fileID: 8558984440570894221}
   - component: {fileID: 9200000000000000005}
   - component: {fileID: 5694946991306709404}
+  - component: {fileID: 2446957231931751283}
   m_Layer: 7
   m_Name: BigBoss
   m_TagString: Enemy
@@ -205,7 +183,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 75f5f34dc1b5347e0b8351032682f224, type: 3}
+  m_Sprite: {fileID: -6210261254661933376, guid: 1ccd614b0ce00ee469c0105c3feb4d49, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -238,7 +216,7 @@ MonoBehaviour:
   _wallLayer:
     serializedVersion: 2
     m_Bits: 0
-  _animator: {fileID: 2446957231931751283}
+  _animator: {fileID: 0}
 --- !u!114 &6449689823896688469
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -257,16 +235,9 @@ MonoBehaviour:
   _detectionRange: 12
   _attackRange: 1.5
   _attackCooldown: 1.5
-  _wallCollisionRadius: 0.45
-  _wallLayer:
-    serializedVersion: 2
-    m_Bits: 0
   _attackHitbox: {fileID: 9200000000000000004}
   _hitActiveDuration: 0.15
   _attackRangeIndicator: {fileID: 0}
-  _spriteRenderer: {fileID: 0}
-  _damageFlashColor: {r: 1, g: 0, b: 0, a: 1}
-  _damageFlashDuration: 0.1
   _meleeDamage: 7
   _meleeRadius: 1.5
   _meleeTelegraphTime: 0.3
@@ -354,6 +325,28 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: -0.0022261739}
   m_Radius: 0.50170857
+--- !u!95 &2446957231931751283
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 297833184937203806}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 14ec7025a2c92c24e869f9b0639998a6, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &337848383497097836
 GameObject:
   m_ObjectHideFlags: 0

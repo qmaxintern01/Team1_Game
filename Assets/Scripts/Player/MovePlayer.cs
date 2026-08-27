@@ -15,8 +15,9 @@ namespace Team1
         private Vector2 _moveInput;
         private PlayerDash _dash;
         private Camera _mainCamera;
+        private string _currentAnimationState;
 
-        // ナイフの背面判定や銃の照準方向は、移動入力ではなくマウスポインターの向きを基準にする(移動キーの入力方向に関わらず常にマウス方向を向く)
+        // ナイフの背面判定や銃の照準方向、歩行アニメーションの向きは、移動入力ではなくマウスポインターの向きを基準にする(移動キーの入力方向に関わらず常にマウス方向を向く)
         public Vector2 FacingDirection { get; private set; } = Vector2.down;
 
         private void Awake()
@@ -32,13 +33,13 @@ namespace Team1
                 _animator = _player.GetComponent<Animator>();
             }
 
-            _mainCamera = Camera.main;
-            Debug.Assert(_mainCamera != null, $"{nameof(_mainCamera)} is not found.", this);
-
             if (_wallLayer.value == 0)
             {
                 _wallLayer = LayerMask.GetMask("Wall");
             }
+
+            _mainCamera = Camera.main;
+            Debug.Assert(_mainCamera != null, $"{nameof(_mainCamera)} is not found.", this);
         }
 
         private void OnEnable()
@@ -65,17 +66,43 @@ namespace Team1
             _moveInput = _gameInputs.Player.Move.ReadValue<Vector2>();
             float speedMultiplier = _dash != null ? _dash.SpeedMultiplier : 1f;
 
+            // マウスが右を指していれば移動入力が左であってもプレイヤーは常に右向きとして扱う(移動方向とは独立)
             UpdateFacingDirectionFromPointer();
 
             bool isMoving = _moveInput.sqrMagnitude > 0.0001f;
-            _animator.SetFloat("MoveX", FacingDirection.x);
-            _animator.SetFloat("MoveY", FacingDirection.y);
-            _animator.SetBool("isMove", isMoving);
+
+            // AnimatorControllerのMoveX/MoveYパラメータによる遷移は、立ち止まっている間は方向転換しない(Idle同士の遷移が組まれていない)ため、
+            // 現在の向き(マウス基準)と移動有無から再生すべきステートを直接算出してPlayする(静止中でもマウス方向へ向きを更新できるようにする)
+            string targetAnimationState = ResolveAnimationStateName(FacingDirection, isMoving);
+
+            if (targetAnimationState != _currentAnimationState)
+            {
+                _animator.Play(targetAnimationState);
+                _currentAnimationState = targetAnimationState;
+            }
+
             // 移動速度倍率(ダッシュ/ゲージ切れ)に合わせて歩行アニメーションの再生速度も変える
             _animator.speed = isMoving ? speedMultiplier : 1f;
 
             Vector3 delta = new Vector3(_moveInput.x, _moveInput.y, 0) * _moveSpeed * speedMultiplier * Time.deltaTime;
             _player.transform.position = WallCollision.ResolveMovement(_player.transform.position, delta, _wallCollisionRadius, _wallLayer);
+        }
+
+        // Player.controller側のステート名(表記ゆれはアセット側に合わせている)
+        private static string ResolveAnimationStateName(Vector2 direction, bool isMoving)
+        {
+            bool horizontalDominant = Mathf.Abs(direction.x) >= Mathf.Abs(direction.y);
+
+            if (horizontalDominant)
+            {
+                return direction.x >= 0f
+                    ? (isMoving ? "LightWark" : "LightIdol")
+                    : (isMoving ? "LeftWark" : "LeftIdol");
+            }
+
+            return direction.y >= 0f
+                ? (isMoving ? "UpWark" : "UpIdol")
+                : (isMoving ? "DownWalk" : "Idol");
         }
 
         private void UpdateFacingDirectionFromPointer()
@@ -85,7 +112,6 @@ namespace Team1
                 return;
             }
 
-            // マウスが右を指していれば移動入力が左であってもプレイヤーは常に右向きとして扱う(移動方向とは独立)
             Vector2 pointerScreenPosition = _gameInputs.UI.Point.ReadValue<Vector2>();
             float distanceToPlayer = Mathf.Abs(_mainCamera.transform.position.z - _player.transform.position.z);
             Vector3 pointerWorldPosition = _mainCamera.ScreenToWorldPoint(new Vector3(pointerScreenPosition.x, pointerScreenPosition.y, distanceToPlayer));

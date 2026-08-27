@@ -17,26 +17,11 @@ namespace Team1
 
         [Header("チャージ")]
         [SerializeField] private float _chargeInterval = 1f;
-        [SerializeField] private int _maxChargeLevel = 5;
         [SerializeField] private float _damagePerChargeLevel = 1.5f;
         [SerializeField] private float _sizePerChargeLevel = 1.5f;
         // 当たり判定の拡大率は見た目より控えめにする(見た目と同率だと過大に、0だと見た目より小さすぎて外れやすくなるため)
         [SerializeField] private float _colliderSizePerChargeLevel = 0.3f;
         [SerializeField] private int _oilCostPerChargeLevel = 1;
-
-        // 次の1チャージ分が溜まるまでの進捗(0〜1)。ゲージUI表示用
-        public float ChargeProgress01
-        {
-            get
-            {
-                if (!_isCharging || _chargeLevel >= _maxChargeLevel)
-                {
-                    return _isCharging ? 1f : 0f;
-                }
-
-                return Mathf.Clamp01(_chargeTimer / _chargeInterval);
-            }
-        }
 
         private InputSystem_Actions _gameInputs;
         private PlayerOil _oil;
@@ -119,14 +104,9 @@ namespace Team1
                 return;
             }
 
-            if (_chargeLevel >= _maxChargeLevel)
-            {
-                return;
-            }
-
             _chargeTimer += Time.deltaTime;
 
-            while (_chargeTimer >= _chargeInterval && _chargeLevel < _maxChargeLevel)
+            while (_chargeTimer >= _chargeInterval)
             {
                 _chargeTimer -= _chargeInterval;
                 _chargeLevel++;

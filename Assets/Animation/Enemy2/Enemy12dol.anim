@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Enemy2LightIdol
+  m_Name: Enemy12dol
   serializedVersion: 8
   m_Legacy: 0
   m_Compressed: 0
@@ -21,7 +21,7 @@ AnimationClip:
   - serializedVersion: 2
     curve:
     - time: 0
-      value: {fileID: 460019497605796383, guid: 4bf193ca0c29e254b82adc3d9056d24e, type: 3}
+      value: {fileID: -4913834013406441579, guid: 885b8a62493b539418b9b187ff4641de, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
@@ -45,7 +45,7 @@ AnimationClip:
       isSerializeReferenceCurve: 0
       metaData: 0
     pptrCurveMapping:
-    - {fileID: 460019497605796383, guid: 4bf193ca0c29e254b82adc3d9056d24e, type: 3}
+    - {fileID: -4913834013406441579, guid: 885b8a62493b539418b9b187ff4641de, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
