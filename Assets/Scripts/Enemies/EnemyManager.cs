@@ -26,7 +26,12 @@ namespace Team1
         [SerializeField] private int _maxSpawnAttempts = 30;
         [SerializeField] private LayerMask _wallLayer;
 
+        [Header("BigBoss周辺の出現除外")]
+        // BigBossを中心とした矩形(半径ではなく半辺長)で、ボスの部屋全体を出現候補から除外する
+        [SerializeField] private Vector2 _bossExclusionHalfExtents = new Vector2(9f, 5f);
+
         private readonly List<Vector3Int> _floorCells = new List<Vector3Int>();
+        private BigBoss _bigBoss;
         private int _aliveCount;
 
         private void Awake()
@@ -40,6 +45,7 @@ namespace Team1
                 _wallLayer = LayerMask.GetMask("Wall");
             }
 
+            _bigBoss = FindAnyObjectByType<BigBoss>();
             CacheFloorCells();
         }
 
@@ -69,11 +75,28 @@ namespace Team1
             BoundsInt bounds = _groundTilemap.cellBounds;
             foreach (Vector3Int cell in bounds.allPositionsWithin)
             {
-                if (_groundTilemap.HasTile(cell))
+                if (!_groundTilemap.HasTile(cell))
                 {
-                    _floorCells.Add(cell);
+                    continue;
                 }
+
+                if (_bigBoss != null)
+                {
+                    Vector3 worldPosition = _groundTilemap.GetCellCenterWorld(cell);
+                    if (IsInsideBossExclusionArea(worldPosition))
+                    {
+                        continue;
+                    }
+                }
+
+                _floorCells.Add(cell);
             }
+        }
+
+        private bool IsInsideBossExclusionArea(Vector3 worldPosition)
+        {
+            Vector3 offset = worldPosition - _bigBoss.transform.position;
+            return Mathf.Abs(offset.x) < _bossExclusionHalfExtents.x && Mathf.Abs(offset.y) < _bossExclusionHalfExtents.y;
         }
 
         private void SpawnEnemy()
@@ -132,15 +155,21 @@ namespace Team1
 
         private void OnDrawGizmosSelected()
         {
-            if (_groundTilemap == null)
+            if (_groundTilemap != null)
             {
-                return;
+                Gizmos.color = Color.yellow;
+                foreach (Vector3Int cell in _floorCells)
+                {
+                    Gizmos.DrawWireCube(_groundTilemap.GetCellCenterWorld(cell), _groundTilemap.cellSize);
+                }
             }
 
-            Gizmos.color = Color.yellow;
-            foreach (Vector3Int cell in _floorCells)
+            // 再生前でもボス除外範囲をScene上で確認・調整できるようにする
+            BigBoss boss = _bigBoss != null ? _bigBoss : FindAnyObjectByType<BigBoss>();
+            if (boss != null)
             {
-                Gizmos.DrawWireCube(_groundTilemap.GetCellCenterWorld(cell), _groundTilemap.cellSize);
+                Gizmos.color = Color.red;
+                Gizmos.DrawWireCube(boss.transform.position, new Vector3(_bossExclusionHalfExtents.x * 2f, _bossExclusionHalfExtents.y * 2f, 0f));
             }
         }
     }
