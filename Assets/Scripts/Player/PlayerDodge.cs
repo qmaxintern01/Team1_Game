@@ -54,6 +54,12 @@ namespace Team1
 
         private void HandleDodgeInput(InputAction.CallbackContext context)
         {
+            // InputActionのイベントはTime.timeScaleに関係なく発火するため、演出停止中は明示的に無視する
+            if (Time.timeScale <= 0f)
+            {
+                return;
+            }
+
             TryDodge();
         }
 

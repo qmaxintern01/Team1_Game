@@ -67,7 +67,7 @@ namespace Team1.Result
             _damageTaken += amount;
         }
 
-        public RunResultData BuildResult()
+        public RunResultData BuildResult(bool isDefeated = false)
         {
             return new RunResultData
             {
@@ -79,6 +79,7 @@ namespace Team1.Result
                 KnifeKillCount = _knifeKillCount,
                 BackstabKillCount = _backstabKillCount,
                 DamageTaken = _damageTaken,
+                IsDefeated = isDefeated,
             };
         }
     }

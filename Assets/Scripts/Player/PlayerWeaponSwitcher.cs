@@ -6,6 +6,7 @@ namespace Team1
     // 武器切替の枠組み。現状はナイフのみ攻撃処理を実装済みで、銃2種は選択できるだけの状態
     public class PlayerWeaponSwitcher : MonoBehaviour
     {
+
         private static readonly WeaponType[] Weapons =
         {
             WeaponType.Knife,
@@ -22,6 +23,22 @@ namespace Team1
         private int _currentIndex;
 
         public WeaponType CurrentWeapon => Weapons[_currentIndex];
+
+        // UI表示用に現在の武器種名を日本語で返す
+        public string GetCurrentWeaponName()
+        {
+            switch (CurrentWeapon)
+            {
+                case WeaponType.Knife:
+                    return "ナイフ";
+                case WeaponType.AssaultRifle:
+                    return "アサルトライフル";
+                case WeaponType.GrenadeLauncher:
+                    return "グレネードランチャー";
+                default:
+                    return CurrentWeapon.ToString();
+            }
+        }
 
         private void OnEnable()
         {

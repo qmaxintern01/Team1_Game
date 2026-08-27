@@ -109,6 +109,13 @@ namespace Team1
 
         protected virtual void Update()
         {
+            // ゲーム開始カウントダウン等でTime.timeScale=0の間は、
+            // _attackTimerの初期値が0のままだと初回Updateで攻撃条件を満たしてしまうため明示的に止める
+            if (Time.timeScale <= 0f)
+            {
+                return;
+            }
+
             if (_player == null || _health.IsDead)
             {
                 return;

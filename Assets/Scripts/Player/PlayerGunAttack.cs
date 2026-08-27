@@ -24,6 +24,9 @@ namespace Team1
         [SerializeField] private float _colliderSizePerChargeLevel = 0.3f;
         [SerializeField] private int _oilCostPerChargeLevel = 1;
 
+        [SerializeField] private Animator _animator;
+        [SerializeField] private float _keepAnimationDuration = 2f;
+
         // 次の1チャージ分が溜まるまでの進捗(0〜1)。ゲージUI表示用
         public float ChargeProgress01
         {
@@ -59,6 +62,10 @@ namespace Team1
             if (_movePlayer == null)
             {
                 _movePlayer = FindAnyObjectByType<MovePlayer>();
+            }
+            if (_animator == null)
+            {
+                _animator = GetComponent<Animator>();
             }
 
             Debug.Assert(_bulletPrefab != null, $"{nameof(_bulletPrefab)} is not assigned.", this);
@@ -104,6 +111,8 @@ namespace Team1
 
             _gameInputs.Disable();
             _gameInputs.Dispose();
+
+            CancelInvoke(nameof(ResetIsKeep));
         }
 
         private void Update()
@@ -136,6 +145,12 @@ namespace Team1
 
         private void HandleChargeStart(InputAction.CallbackContext context)
         {
+            // InputActionのイベントはTime.timeScaleに関係なく発火するため、演出停止中は明示的に無視する
+            if (Time.timeScale <= 0f)
+            {
+                return;
+            }
+
             if (_weaponSwitcher != null && _weaponSwitcher.CurrentWeapon != WeaponType.AssaultRifle)
             {
                 return;
@@ -154,6 +169,12 @@ namespace Team1
 
         private void HandleFireInput(InputAction.CallbackContext context)
         {
+            // InputActionのイベントはTime.timeScaleに関係なく発火するため、演出停止中は明示的に無視する
+            if (Time.timeScale <= 0f)
+            {
+                return;
+            }
+
             if (_weaponSwitcher != null && _weaponSwitcher.CurrentWeapon != WeaponType.AssaultRifle)
             {
                 return;
@@ -210,6 +231,16 @@ namespace Team1
             bullet.Launch(facing, damage);
 
             Debug.Log($"AR発砲: チャージレベル{chargeLevel}, damage={damage}, visualSizeMultiplier={visualSizeMultiplier}, colliderSizeMultiplier={colliderSizeMultiplier}, oilCost={(infiniteAmmo ? 0 : totalOilCost)}, infiniteAmmo={infiniteAmmo}");
+            _animator.SetTrigger("isAttack");
+
+            _animator.SetBool("isKeep", true);
+            CancelInvoke(nameof(ResetIsKeep));
+            Invoke(nameof(ResetIsKeep), _keepAnimationDuration);
+        }
+
+        private void ResetIsKeep()
+        {
+            _animator.SetBool("isKeep", false);
         }
     }
 }

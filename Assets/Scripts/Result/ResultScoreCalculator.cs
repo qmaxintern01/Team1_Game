@@ -63,9 +63,15 @@ namespace Team1.Result
             float damageBonus = CalculateDamageBonus(data, config);
 
             float total = oilScore + timeScore + killScore + stylishScore + damageBonus;
-            ResultRank rank = DetermineRank(total, config);
-            string title = DetermineTitle(oilScore, timeScore, killScore, stylishScore, damageBonus, config, rank);
-            string advice = BuildNextTargetAdvice(data, config, oilScore, stylishScore, timeScore, total, rank);
+
+            // 敵にやられてゲームオーバーになった場合は、内訳スコアに関わらず最低評価(Dランク)にする
+            ResultRank rank = data.IsDefeated ? ResultRank.D : DetermineRank(total, config);
+            string title = data.IsDefeated
+                ? "力尽きた挑戦者"
+                : DetermineTitle(oilScore, timeScore, killScore, stylishScore, damageBonus, config, rank);
+            string advice = data.IsDefeated
+                ? "敵の攻撃を避けて生き延びよう。"
+                : BuildNextTargetAdvice(data, config, oilScore, stylishScore, timeScore, total, rank);
 
             return new ResultScoreBreakdown(oilScore, timeScore, killScore, stylishScore, damageBonus, total, rank, title, advice);
         }

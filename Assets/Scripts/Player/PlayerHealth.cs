@@ -33,9 +33,10 @@ namespace Team1
             // 既に設定済みの実績を上書きしないよう、そのまま遷移のみ行う
             if (RunResultTracker.Instance != null)
             {
-                RunResultStore.Current = RunResultTracker.Instance.BuildResult();
+                RunResultStore.Current = RunResultTracker.Instance.BuildResult(isDefeated: true);
             }
 
+            
             // Resultシーンへ移行
             SceneTransitionManager.LoadScene("ResultScene");
         }

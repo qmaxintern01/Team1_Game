@@ -15,5 +15,8 @@ namespace Team1.Result
         public int KnifeKillCount;
         public int BackstabKillCount;
         public int DamageTaken;
+
+        // 敵にやられてゲームオーバーになった場合はtrue。スコアに関わらず最低評価(Dランク)にするために使う
+        public bool IsDefeated;
     }
 }

@@ -80,8 +80,26 @@ namespace Team1
             }
         }
 
-        private void HandleSkill1Input(InputAction.CallbackContext context) => TryUseHealSkill();
-        private void HandleSkill2Input(InputAction.CallbackContext context) => TryUseInfiniteAmmoSkill();
+        private void HandleSkill1Input(InputAction.CallbackContext context)
+        {
+            // InputActionのイベントはTime.timeScaleに関係なく発火するため、演出停止中は明示的に無視する
+            if (Time.timeScale <= 0f)
+            {
+                return;
+            }
+
+            TryUseHealSkill();
+        }
+
+        private void HandleSkill2Input(InputAction.CallbackContext context)
+        {
+            if (Time.timeScale <= 0f)
+            {
+                return;
+            }
+
+            TryUseInfiniteAmmoSkill();
+        }
 
         public bool TryUseHealSkill()
         {

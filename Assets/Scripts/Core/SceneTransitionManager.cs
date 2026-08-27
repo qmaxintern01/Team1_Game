@@ -93,6 +93,9 @@ namespace Team1
             // 新シーンのAwake/Start/Updateが暗転中に進んでしまい、
             // フェードインした瞬間には既に動いている「唐突さ」を防ぐため、
             // 読み込みからフェードイン完了まではゲーム内時間を止める。
+            // ここで1fに戻すと、遷移先シーンが独自にtimeScaleを0に保持したい場合
+            // (例: GameStartCountdownの開始演出)を上書きしてしまうため、
+            // timeScaleを1に戻す責任は各シーンの入り口側コンポーネントに委ねる。
             Time.timeScale = 0f;
 
             var loadOperation = SceneManager.LoadSceneAsync(sceneName);
@@ -104,7 +107,6 @@ namespace Team1
             yield return WaitRealtime(BlackHoldDuration);
             yield return Fade(1f, 0f, fadeDuration);
 
-            Time.timeScale = 1f;
             canvasGroup.blocksRaycasts = false;
             isTransitioning = false;
         }
