@@ -15,6 +15,7 @@ namespace Team1
         private Vector2 _moveInput;
         private PlayerDash _dash;
         private Camera _mainCamera;
+        private SpriteRenderer _spriteRenderer;
 
         // ナイフの背面判定や銃の照準方向は、移動入力ではなくマウスポインターの向きを基準にする(移動キーの入力方向に関わらず常にマウス方向を向く)
         public Vector2 FacingDirection { get; private set; } = Vector2.down;
@@ -30,6 +31,7 @@ namespace Team1
             {
                 _dash = _player.GetComponent<PlayerDash>();
                 _animator = _player.GetComponent<Animator>();
+                _spriteRenderer = _player.GetComponent<SpriteRenderer>();
             }
 
             _mainCamera = Camera.main;
@@ -76,6 +78,15 @@ namespace Team1
 
             Vector3 delta = new Vector3(_moveInput.x, _moveInput.y, 0) * _moveSpeed * speedMultiplier * Time.deltaTime;
             _player.transform.position = WallCollision.ResolveMovement(_player.transform.position, delta, _wallCollisionRadius, _wallLayer);
+        }
+
+        private void LateUpdate()
+        {
+            // 表示順をY座標で揃える(敵側はEnemyBaseで同じ計算式を使用)
+            if (_spriteRenderer != null && _player != null)
+            {
+                _spriteRenderer.sortingOrder = YSortConfig.CalculateSortingOrder(_player.transform.position.y);
+            }
         }
 
         private void UpdateFacingDirectionFromPointer()

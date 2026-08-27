@@ -28,17 +28,6 @@ namespace Team1
         {
             _health.OnDamaged -= HandleDamaged;
             _health.OnDied -= HandleDied;
-
-            // ゲームオーバーによるリザルト遷移。Instanceがnullの場合(シーンアンロードに伴う再入時など)は
-            // 既に設定済みの実績を上書きしないよう、そのまま遷移のみ行う
-            if (RunResultTracker.Instance != null)
-            {
-                RunResultStore.Current = RunResultTracker.Instance.BuildResult(isDefeated: true);
-            }
-
-            
-            // Resultシーンへ移行
-            SceneTransitionManager.LoadScene("ResultScene");
         }
 
         private void HandleDamaged(int amount)
@@ -49,6 +38,16 @@ namespace Team1
 
         private void HandleDied()
         {
+            // ゲームオーバーによるリザルト遷移。OnDisableで行うとシーン遷移時のオブジェクト破棄でも
+            // 誤って発火し、クリア実績を敗北で上書きしてしまうため、実際の死亡時のみ実行する
+            if (RunResultTracker.Instance != null)
+            {
+                RunResultStore.Current = RunResultTracker.Instance.BuildResult(isDefeated: true);
+            }
+
+            // Resultシーンへ移行
+            SceneTransitionManager.LoadScene("ResultScene");
+
             // SetActiveにより、入力・移動・当たり判定を含めた全コンポーネントの動作が停止し、見た目も消える
             gameObject.SetActive(false);
         }

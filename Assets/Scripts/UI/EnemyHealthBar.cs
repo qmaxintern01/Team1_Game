@@ -12,6 +12,7 @@ namespace Team1.UI
         [SerializeField] private Vector3 _worldOffset = new Vector3(0f, 1.2f, 0f);
 
         private Transform _target;
+        private Canvas _canvas;
 
         private void Awake()
         {
@@ -21,6 +22,10 @@ namespace Team1.UI
             }
 
             _target = _health != null ? _health.transform : transform.parent;
+
+            // 敵本体のSpriteRendererはY座標に応じてSortingOrderが動くため、HPバーはそれより常に手前になる固定値にする
+            _canvas = GetComponent<Canvas>();
+            _canvas.sortingOrder = YSortConfig.WorldSpaceUIOrder;
 
             // エラー確認
             Debug.Assert(_health != null, $"{nameof(_health)} is not assigned.", this);

@@ -139,6 +139,15 @@ namespace Team1
             }
         }
 
+        private void LateUpdate()
+        {
+            // 表示順をY座標で揃える(プレイヤー側はMovePlayerで同じ計算式を使用)
+            if (_spriteRenderer != null)
+            {
+                _spriteRenderer.sortingOrder = YSortConfig.CalculateSortingOrder(transform.position.y);
+            }
+        }
+
         protected abstract void PerformAttack();
 
         // 予兆表示・攻撃判定の双方で同じ向きを使うための取得口。IsBusy中はEnemyPatrolが向き更新を止めるため、
