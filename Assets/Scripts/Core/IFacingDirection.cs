@@ -6,5 +6,8 @@ namespace Team1
     public interface IFacingDirection
     {
         Vector2 FacingDirection { get; }
+
+        // Animatorが実際に表示している上下左右4方向に丸めた向き。見た目(スプライト)と一致させたい判定に使う
+        Vector2 DiscreteFacingDirection { get; }
     }
 }

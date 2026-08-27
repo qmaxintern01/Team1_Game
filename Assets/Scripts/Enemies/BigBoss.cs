@@ -15,6 +15,7 @@ namespace Team1
         [SerializeField] private int _sweepDamage = 14;
         [SerializeField] private float _sweepRadius = 3f;
         [SerializeField] private float _sweepTelegraphTime = 0.5f;
+        [SerializeField] private float _sweepRecoveryTime = 0.4f;
 
         [Header("ジャンプスタンプ")]
         [SerializeField] private int _stompDamage = 21;
@@ -22,6 +23,10 @@ namespace Team1
         [SerializeField] private float _jumpHeight = 4f;
         [SerializeField] private float _jumpUpTime = 0.5f;
         [SerializeField] private float _jumpDownTime = 0.4f;
+        [SerializeField] private float _stompRecoveryTime = 0.6f;
+        // 死亡時ドロップ(_oilRecoveryAmount)とは別に、スタンプ攻撃後に確率でオイルを落とす
+        [SerializeField, Range(0f, 1f)] private float _stompOilDropChance = 0.3f;
+        [SerializeField] private int _stompOilDropAmount = 15;
 
         private void Reset()
         {
@@ -39,7 +44,7 @@ namespace Team1
                     StartCoroutine(TelegraphAndDealDamage(_meleeDamage, _meleeRadius, _meleeTelegraphTime));
                     break;
                 case 1:
-                    StartCoroutine(TelegraphAndDealDamage(_sweepDamage, _sweepRadius, _sweepTelegraphTime));
+                    StartCoroutine(TelegraphAndDealDamage(_sweepDamage, _sweepRadius, _sweepTelegraphTime, _sweepRecoveryTime));
                     break;
                 default:
                     StartCoroutine(StompAttackRoutine());
@@ -50,9 +55,11 @@ namespace Team1
         private IEnumerator StompAttackRoutine()
         {
             _isBusy = true;
+            // 予兆表示と実際の判定がズレないよう、この攻撃を通して使う向きをここで一度だけ取得する
+            Vector2 facingDirection = GetFacingDirection();
             if (_attackRangeIndicator != null)
             {
-                _attackRangeIndicator.Show(_stompRadius);
+                _attackRangeIndicator.Show(_stompRadius, facingDirection);
             }
 
             Vector3 origin = transform.position;
@@ -66,8 +73,26 @@ namespace Team1
                 _attackRangeIndicator.Hide();
             }
 
-            yield return ActivateHitboxRoutine(_stompDamage, _stompRadius);
+            yield return ActivateHitboxRoutine(_stompDamage, _stompRadius, facingDirection);
+            TryDropStompOil();
+
+            if (_stompRecoveryTime > 0f)
+            {
+                yield return new WaitForSeconds(_stompRecoveryTime);
+            }
+
             _isBusy = false;
+        }
+
+        private void TryDropStompOil()
+        {
+            if (_dropItemPrefab == null || Random.value >= _stompOilDropChance)
+            {
+                return;
+            }
+
+            OilRecoveryItem drop = Instantiate(_dropItemPrefab, transform.position, Quaternion.identity);
+            drop.SetRecoveryAmount(_stompOilDropAmount);
         }
 
         private IEnumerator MoveOverTime(Vector3 from, Vector3 to, float duration)
