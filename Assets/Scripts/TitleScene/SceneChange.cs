@@ -1,10 +1,10 @@
+using Team1;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class SceneChange : MonoBehaviour
 {
     public void EnterGame()
     {
-        SceneManager.LoadScene("GameScene");
+        SceneTransitionManager.LoadScene("GameScene");
     }
 }

@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49dc9aac04b1ff042ba5e757991bf1b3, type: 3}
+  m_Name: ResultScoreConfig
+  m_EditorClassIdentifier: Assembly-CSharp::Team1.Result.ResultScoreConfig
+  _oilScoreMax: 200
+  _timeScoreMax: 200
+  _goldTimeSeconds: 90
+  _limitTimeSeconds: 420
+  _killScoreMax: 200
+  _scorePerWeakKill: 8
+  _scorePerMidBossKill: 40
+  _stylishScoreMax: 200
+  _scorePerKnifeKill: 15
+  _scorePerBackstab: 25
+  _damageBonusMax: 100
+  _damagePenaltyPerPoint: 0.5
+  _rankSThreshold: 560
+  _rankAThreshold: 420
+  _rankBThreshold: 280
+  _rankCThreshold: 150

@@ -85,13 +85,13 @@ namespace Team1.UI
         private void Retry()
         {
             Time.timeScale = 1f;
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            SceneTransitionManager.LoadScene(SceneManager.GetActiveScene().name);
         }
 
         private void GoToTitle()
         {
             Time.timeScale = 1f;
-            SceneManager.LoadScene("TitleScene");
+            SceneTransitionManager.LoadScene("TitleScene");
         }
 
         private void ApplyJapaneseFont()
