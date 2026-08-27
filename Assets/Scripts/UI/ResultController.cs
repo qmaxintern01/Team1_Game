@@ -169,7 +169,7 @@ namespace Team1.UI
             StartCoroutine(AnimateGauge(_totalGaugeFill, _totalScoreText, result.TotalScore, totalMax, "総合スコア"));
             StartCoroutine(AnimateGauge(_oilGaugeFill, _oilScoreText, result.OilScore, _config.OilScoreMax, "残量オイル"));
             StartCoroutine(AnimateGauge(_timeGaugeFill, _timeScoreText, result.TimeScore, _config.TimeScoreMax, "クリアタイム"));
-            StartCoroutine(AnimateGauge(_killGaugeFill, _killScoreText, result.KillScore, _config.KillScoreMax, "撃破数"));
+            StartCoroutine(AnimateGauge(_killGaugeFill, _killScoreText, result.KillScore, _config.KillScoreMax, "撃破スコア"));
             StartCoroutine(AnimateGauge(_stylishGaugeFill, _stylishScoreText, result.StylishScore, _config.StylishScoreMax, "スタイリッシュ"));
             StartCoroutine(AnimateGauge(_damageGaugeFill, _damageScoreText, result.DamageBonus, _config.DamageBonusMax, "被ダメージ"));
         }

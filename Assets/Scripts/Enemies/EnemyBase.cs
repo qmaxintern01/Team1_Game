@@ -1,4 +1,5 @@
 using System.Collections;
+using Team1.Result;
 using UnityEngine;
 
 namespace Team1
@@ -41,6 +42,7 @@ namespace Team1
         private Color _defaultSpriteColor;
         private Coroutine _damageFlashRoutine;
 
+        private bool _lastHitWasKnife;
         private bool _lastHitWasBackstab;
 
         // 予備動作(テレグラフ)や着地演出の最中は、移動・次の攻撃判定を止めるためのフラグ
@@ -98,8 +100,10 @@ namespace Team1
             _health.OnDamaged -= HandleDamaged;
         }
 
-        public void NotifyBackstabHit(bool isBackstab)
+        // 撃破実績(ナイフ撃破数・背面撃破数)の集計に使うため、被弾のたびに直近のダメージ発生源を記録しておく
+        public void NotifyHitSource(bool isKnife, bool isBackstab)
         {
+            _lastHitWasKnife = isKnife;
             _lastHitWasBackstab = isBackstab;
         }
 
@@ -201,6 +205,8 @@ namespace Team1
 
         private void HandleDied()
         {
+            NotifyKillToTracker();
+
             if (_oilRecoveryAmount > 0 && _dropItemPrefab != null)
             {
                 OilRecoveryItem drop = Instantiate(_dropItemPrefab, transform.position, Quaternion.identity);
@@ -208,6 +214,17 @@ namespace Team1
             }
 
             Destroy(gameObject);
+        }
+
+        // リザルト集計はWeakEnemy/MidBossの撃破のみを対象とする(BigBossはゲームクリア判定側で扱うため対象外)
+        private void NotifyKillToTracker()
+        {
+            if (this is BigBoss || RunResultTracker.Instance == null)
+            {
+                return;
+            }
+
+            RunResultTracker.Instance.NotifyEnemyKilled(this is MidBoss, _lastHitWasKnife, _lastHitWasBackstab);
         }
     }
 }

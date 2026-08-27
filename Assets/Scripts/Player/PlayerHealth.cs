@@ -1,3 +1,4 @@
+using Team1.Result;
 using UnityEngine;
 
 namespace Team1
@@ -27,10 +28,21 @@ namespace Team1
         {
             _health.OnDamaged -= HandleDamaged;
             _health.OnDied -= HandleDied;
+
+            // ゲームオーバーによるリザルト遷移。Instanceがnullの場合(シーンアンロードに伴う再入時など)は
+            // 既に設定済みの実績を上書きしないよう、そのまま遷移のみ行う
+            if (RunResultTracker.Instance != null)
+            {
+                RunResultStore.Current = RunResultTracker.Instance.BuildResult();
+            }
+
+            // Resultシーンへ移行
+            SceneTransitionManager.LoadScene("ResultScene");
         }
 
         private void HandleDamaged(int amount)
         {
+            RunResultTracker.Instance?.NotifyPlayerDamaged(amount);
             Debug.Log($"敵の攻撃がプレイヤーに命中: {amount}ダメージ (残りHP: {_health.CurrentHp}/{_health.MaxHp})");
         }
 

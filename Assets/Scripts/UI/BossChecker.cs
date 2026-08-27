@@ -1,5 +1,5 @@
+using Team1.Result;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Team1
 {
@@ -22,7 +22,13 @@ namespace Team1
             {
                 // BigBossがシーン上に存在しない場合、ボス戦が終了したとみなし、ゲームクリア処理を行う
                 Debug.Log("BigBoss is defeated. Game Clear!");
-                //SceneManager.LoadScene("GameClearScene");
+
+                if (RunResultTracker.Instance != null)
+                {
+                    RunResultStore.Current = RunResultTracker.Instance.BuildResult();
+                }
+
+                SceneTransitionManager.LoadScene("ResultScene");
                 return;
             }
         }

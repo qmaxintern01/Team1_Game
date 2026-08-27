@@ -80,10 +80,10 @@ namespace Team1
                 hit.TryGetComponent(out EnemyBase enemyBase);
                 bool wasAlive = health != null && !health.IsDead;
 
-                // 倒された際にオイルドロップを抑制するかどうかの判定に使うため、ダメージを与える前に伝えておく
+                // 倒された際にオイルドロップを抑制するか・リザルト実績(ナイフ撃破/背面撃破)に計上するかの判定に使うため、ダメージを与える前に伝えておく
                 if (enemyBase != null)
                 {
-                    enemyBase.NotifyBackstabHit(isBackstab);
+                    enemyBase.NotifyHitSource(isKnife: true, isBackstab: isBackstab);
                 }
 
                 damageable.TakeDamage(damage);

@@ -285,6 +285,7 @@ GameObject:
   m_Component:
   - component: {fileID: 85959663}
   - component: {fileID: 85959664}
+  - component: {fileID: 85959665}
   m_Layer: 0
   m_Name: GameClearChecker
   m_TagString: Untagged
@@ -320,6 +321,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Team1.BossChecker
   _bigBoss: {fileID: 0}
+--- !u!114 &85959665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 85959662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8a7d78ec6585324d8b36f0eeb8060c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Team1.Result.RunResultTracker
+  _playerOil: {fileID: 0}
 --- !u!4 &94280073 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1949136776998700038, guid: 2657c2f543dbcf44a9a81cbab76d9385, type: 3}
@@ -3936,11 +3950,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7096806119418353930, guid: 063642c0dbda80d48b9e08b077ec7c3c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 112.8
+      value: 7.5
       objectReference: {fileID: 0}
     - target: {fileID: 7096806119418353930, guid: 063642c0dbda80d48b9e08b077ec7c3c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -35
+      value: 6.2
       objectReference: {fileID: 0}
     - target: {fileID: 7096806119418353930, guid: 063642c0dbda80d48b9e08b077ec7c3c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -396958,7 +396972,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7137848960411748820, guid: cc2bef504141bf440938f71c25b33ed2, type: 3}
       propertyPath: _damage
-      value: 5
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 7137848960411748820, guid: cc2bef504141bf440938f71c25b33ed2, type: 3}
       propertyPath: _maxChargeLevel

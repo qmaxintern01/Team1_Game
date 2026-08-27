@@ -65,10 +65,10 @@ namespace Team1
             {
                 Debug.Log($"Bullet hit {other.gameObject.name} for {_damage} damage.");
 
-                // 銃の弾は背面攻撃の対象外。ナイフの背面攻撃直後に銃で倒された場合でもオイルドロップされるよう、フラグを明示的に解除する
+                // 銃の弾は背面攻撃・ナイフ撃破の対象外。ナイフ攻撃直後に銃で倒された場合でも誤計上されないよう、フラグを明示的に解除する
                 if (other.TryGetComponent(out EnemyBase enemyBase))
                 {
-                    enemyBase.NotifyBackstabHit(false);
+                    enemyBase.NotifyHitSource(isKnife: false, isBackstab: false);
                 }
 
                 damageable.TakeDamage(_damage);
