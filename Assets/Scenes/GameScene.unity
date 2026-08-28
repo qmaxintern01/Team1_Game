@@ -398806,7 +398806,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   _bossExclusionHalfExtents: {x: 53, y: 25}
-  _playerExclusionRadius: 5
+  _playerExclusionRadius: 9
 --- !u!4 &1588197487
 Transform:
   m_ObjectHideFlags: 0
