@@ -398654,7 +398654,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7137848960411748820, guid: cc2bef504141bf440938f71c25b33ed2, type: 3}
       propertyPath: _damage
-      value: 7
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 7137848960411748820, guid: cc2bef504141bf440938f71c25b33ed2, type: 3}
       propertyPath: _maxChargeLevel
