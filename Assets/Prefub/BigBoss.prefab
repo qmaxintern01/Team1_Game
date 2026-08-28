@@ -142,7 +142,7 @@ MonoBehaviour:
   _oilRecoveryAmount: 10
   _dropItemPrefab: {fileID: -4191116266018124196, guid: ede74c7e864500c4f92a5388fbce7171, type: 3}
   _detectionRange: 12
-  _attackRange: 1.5
+  _attackRange: 5
   _attackCooldown: 1.5
   _wallCollisionRadius: 0.45
   _wallLayer:
