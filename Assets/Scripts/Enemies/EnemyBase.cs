@@ -8,6 +8,9 @@ namespace Team1
     [RequireComponent(typeof(Health))]
     public abstract class EnemyBase : MonoBehaviour
     {
+        // AnimatorControllerのAnyStateから撃破演出ステートへ遷移させるトリガー名
+        private const string DestroyAnimationTrigger = "Destroy";
+
         [Header("ステータス")]
         [SerializeField] protected int _maxHp = 70;
         [SerializeField] protected int _oilRecoveryAmount = 10;
@@ -33,8 +36,11 @@ namespace Team1
         [SerializeField] protected AttackRangeIndicator _attackRangeIndicator;
         [SerializeField] protected AttackImpactEffect _attackImpactEffect;
         [SerializeField] protected SpriteRenderer _spriteRenderer;
+        [SerializeField] protected Animator _animator;
         [SerializeField] protected Color _damageFlashColor = Color.red;
         [SerializeField] protected float _damageFlashDuration = 0.1f;
+        // AnimatorControllerに登録したDestroyステート(Destroy.anim)の再生時間に合わせる
+        [SerializeField] protected float _destroyAnimationDuration = 1f;
 
         public int OilRecoveryAmount => _oilRecoveryAmount;
 
@@ -81,6 +87,11 @@ namespace Team1
             if (_spriteRenderer != null)
             {
                 _defaultSpriteColor = _spriteRenderer.color;
+            }
+
+            if (_animator == null)
+            {
+                _animator = GetComponentInChildren<Animator>();
             }
 
             if (_wallLayer.value == 0)
@@ -234,6 +245,9 @@ namespace Team1
 
         private void HandleDied()
         {
+            // 撃破後は攻撃・移動(EnemyPatrol)を止め、Destroyアニメーション再生中に動き続けないようにする
+            _isBusy = true;
+
             PlayDefeatedSe();
             NotifyKillToTracker();
 
@@ -243,6 +257,20 @@ namespace Team1
                 drop.SetRecoveryAmount(_oilRecoveryAmount);
             }
 
+            if (_animator != null)
+            {
+                _animator.SetTrigger(DestroyAnimationTrigger);
+                StartCoroutine(DestroyAfterAnimation());
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
+        }
+
+        private IEnumerator DestroyAfterAnimation()
+        {
+            yield return new WaitForSeconds(_destroyAnimationDuration);
             Destroy(gameObject);
         }
 
