@@ -30,8 +30,13 @@ namespace Team1
         // BigBossを中心とした矩形(半径ではなく半辺長)で、ボスの部屋全体を出現候補から除外する
         [SerializeField] private Vector2 _bossExclusionHalfExtents = new Vector2(9f, 5f);
 
+        [Header("Player周辺の出現除外")]
+        // Playerの初期位置を中心とした円形範囲を出現候補から除外する
+        [SerializeField] private float _playerExclusionRadius = 5f;
+
         private readonly List<Vector3Int> _floorCells = new List<Vector3Int>();
         private BigBoss _bigBoss;
+        private Transform _playerTransform;
         private int _aliveCount;
 
         private void Awake()
@@ -46,6 +51,10 @@ namespace Team1
             }
 
             _bigBoss = FindAnyObjectByType<BigBoss>();
+
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+            _playerTransform = player != null ? player.transform : null;
+
             CacheFloorCells();
         }
 
@@ -80,13 +89,16 @@ namespace Team1
                     continue;
                 }
 
-                if (_bigBoss != null)
+                Vector3 worldPosition = _groundTilemap.GetCellCenterWorld(cell);
+
+                if (_bigBoss != null && IsInsideBossExclusionArea(worldPosition))
                 {
-                    Vector3 worldPosition = _groundTilemap.GetCellCenterWorld(cell);
-                    if (IsInsideBossExclusionArea(worldPosition))
-                    {
-                        continue;
-                    }
+                    continue;
+                }
+
+                if (_playerTransform != null && IsInsidePlayerExclusionArea(worldPosition))
+                {
+                    continue;
                 }
 
                 _floorCells.Add(cell);
@@ -97,6 +109,11 @@ namespace Team1
         {
             Vector3 offset = worldPosition - _bigBoss.transform.position;
             return Mathf.Abs(offset.x) < _bossExclusionHalfExtents.x && Mathf.Abs(offset.y) < _bossExclusionHalfExtents.y;
+        }
+
+        private bool IsInsidePlayerExclusionArea(Vector3 worldPosition)
+        {
+            return (worldPosition - _playerTransform.position).sqrMagnitude < _playerExclusionRadius * _playerExclusionRadius;
         }
 
         private void SpawnEnemy()
@@ -170,6 +187,14 @@ namespace Team1
             {
                 Gizmos.color = Color.red;
                 Gizmos.DrawWireCube(boss.transform.position, new Vector3(_bossExclusionHalfExtents.x * 2f, _bossExclusionHalfExtents.y * 2f, 0f));
+            }
+
+            // 再生前でもPlayer除外範囲をScene上で確認・調整できるようにする
+            GameObject player = _playerTransform != null ? _playerTransform.gameObject : GameObject.FindGameObjectWithTag("Player");
+            if (player != null)
+            {
+                Gizmos.color = Color.cyan;
+                Gizmos.DrawWireSphere(player.transform.position, _playerExclusionRadius);
             }
         }
     }
