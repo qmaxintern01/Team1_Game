@@ -41,10 +41,12 @@ namespace Team1
             switch (Random.Range(0, 3))
             {
                 case 0:
-                    StartCoroutine(TelegraphAndDealDamage(_meleeDamage, _meleeRadius, _meleeTelegraphTime));
+                    StartCoroutine(TelegraphAndDealDamage(_meleeDamage, _meleeRadius, _meleeTelegraphTime,
+                        onAttackJudged: () => AudioManager.Instance?.PlayBigBossMeleeAttackSe()));
                     break;
                 case 1:
-                    StartCoroutine(TelegraphAndDealDamage(_sweepDamage, _sweepRadius, _sweepTelegraphTime, _sweepRecoveryTime));
+                    StartCoroutine(TelegraphAndDealDamage(_sweepDamage, _sweepRadius, _sweepTelegraphTime, _sweepRecoveryTime,
+                        () => AudioManager.Instance?.PlayBigBossSweepAttackSe()));
                     break;
                 default:
                     StartCoroutine(StompAttackRoutine());
@@ -73,7 +75,8 @@ namespace Team1
                 _attackRangeIndicator.Hide();
             }
 
-            yield return ActivateHitboxRoutine(_stompDamage, _stompRadius, facingDirection);
+            yield return ActivateHitboxRoutine(_stompDamage, _stompRadius, facingDirection,
+                () => AudioManager.Instance?.PlayBigBossStompAttackSe());
             TryDropStompOil();
 
             if (_stompRecoveryTime > 0f)

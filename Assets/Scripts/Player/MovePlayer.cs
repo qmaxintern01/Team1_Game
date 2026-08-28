@@ -70,6 +70,16 @@ namespace Team1
             UpdateFacingDirectionFromPointer();
 
             bool isMoving = _moveInput.sqrMagnitude > 0.0001f;
+            if (isMoving)
+            {
+                AudioManager.Instance?.PlayPlayerFootstepSe();
+            }
+            else
+            {
+                // 歩行SEがループ設定の場合、止まった瞬間に鳴りっぱなしにならないよう停止する
+                AudioManager.Instance?.StopPlayerFootstepSe();
+            }
+
             _animator.SetFloat("MoveX", FacingDirection.x);
             _animator.SetFloat("MoveY", FacingDirection.y);
             _animator.SetBool("isMove", isMoving);

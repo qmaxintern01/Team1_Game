@@ -29,11 +29,13 @@ namespace Team1
         {
             if (Random.value < _chargeAttackChance)
             {
-                StartCoroutine(TelegraphAndDealDamage(_chargeDamage, _chargeRadius, _chargeWindUpTime, _chargeRecoveryTime));
+                StartCoroutine(TelegraphAndDealDamage(_chargeDamage, _chargeRadius, _chargeWindUpTime, _chargeRecoveryTime,
+                    () => AudioManager.Instance?.PlayMidBossChargeAttackSe()));
             }
             else
             {
-                StartCoroutine(TelegraphAndDealDamage(_meleeDamage, _meleeRadius, _meleeTelegraphTime));
+                StartCoroutine(TelegraphAndDealDamage(_meleeDamage, _meleeRadius, _meleeTelegraphTime,
+                    onAttackJudged: () => AudioManager.Instance?.PlayMidBossMeleeAttackSe()));
             }
         }
     }

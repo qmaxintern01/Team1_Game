@@ -32,6 +32,7 @@ namespace Team1
 
         private void HandleDamaged(int amount)
         {
+            AudioManager.Instance?.PlayHitSe();
             RunResultTracker.Instance?.NotifyPlayerDamaged(amount);
             Debug.Log($"敵の攻撃がプレイヤーに命中: {amount}ダメージ (残りHP: {_health.CurrentHp}/{_health.MaxHp})");
         }
