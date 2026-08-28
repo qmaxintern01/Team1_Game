@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 
 namespace Team1
@@ -113,6 +114,9 @@ namespace Team1
         private string _currentBgmName;
         private float _lastFootstepTime = float.NegativeInfinity;
 
+        // ループ再生用に動的生成したAudioSourceを全て記録しておき、シーン切替時に一括停止できるようにする
+        private readonly List<AudioSource> _loopSeSources = new List<AudioSource>();
+
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -131,6 +135,40 @@ namespace Team1
             _seSource = gameObject.AddComponent<AudioSource>();
             _seSource.loop = false;
             _seSource.playOnAwake = false;
+
+            SceneManager.sceneLoaded += HandleSceneLoaded;
+        }
+
+        private void OnDestroy()
+        {
+            SceneManager.sceneLoaded -= HandleSceneLoaded;
+        }
+
+        // シーンが切り替わったら、前のシーンのBGM/SE(ボスBGMや歩行ループなど)が鳴り続けないよう全て停止する
+        private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            StopAllAudio();
+        }
+
+        public void StopAllAudio()
+        {
+            if (_bgmFadeRoutine != null)
+            {
+                StopCoroutine(_bgmFadeRoutine);
+                _bgmFadeRoutine = null;
+            }
+
+            _currentBgmName = null;
+            _bgmSource.Stop();
+
+            _seSource.Stop();
+            foreach (AudioSource loopSource in _loopSeSources)
+            {
+                if (loopSource != null)
+                {
+                    loopSource.Stop();
+                }
+            }
         }
 
         // インスペクターでBGMに登録した名前を指定して再生する。既に同じ曲を再生中なら何もしない
@@ -293,6 +331,7 @@ namespace Team1
                 loopSource = gameObject.AddComponent<AudioSource>();
                 loopSource.playOnAwake = false;
                 loopSource.loop = true;
+                _loopSeSources.Add(loopSource);
             }
 
             loopSource.volume = _seVolume;

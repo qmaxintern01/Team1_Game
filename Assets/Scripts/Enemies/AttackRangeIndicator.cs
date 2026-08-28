@@ -44,7 +44,8 @@ namespace Team1
 
         // スプライトのローカル+X方向(未回転時は右向き)を前方として、右半分だけを塗った半円を生成する
         // Showで transform.rotation を facingDirection に合わせることで、この+X方向を実際の正面へ向ける
-        private static Sprite GetOrCreateSectorSprite()
+        // AttackImpactEffect(実際の攻撃発生エフェクト)からも同じ形状を使い回すため公開する
+        public static Sprite GetOrCreateSectorSprite()
         {
             if (_sharedSectorSprite != null)
             {

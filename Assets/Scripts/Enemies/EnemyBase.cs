@@ -31,6 +31,7 @@ namespace Team1
 
         [Header("演出")]
         [SerializeField] protected AttackRangeIndicator _attackRangeIndicator;
+        [SerializeField] protected AttackImpactEffect _attackImpactEffect;
         [SerializeField] protected SpriteRenderer _spriteRenderer;
         [SerializeField] protected Color _damageFlashColor = Color.red;
         [SerializeField] protected float _damageFlashDuration = 0.1f;
@@ -170,6 +171,7 @@ namespace Team1
             }
 
             _attackHitbox.Activate(damage, radius, facingDirection);
+            _attackImpactEffect?.Play(radius, facingDirection);
             onActivated?.Invoke();
             yield return new WaitForSeconds(_hitActiveDuration);
             _attackHitbox.Deactivate();
