@@ -2226,6 +2226,8 @@ MonoBehaviour:
   _gunAttackClips:
   - Clip: {fileID: 8300000, guid: 6310d73c1ed51734791b8e309cdc9309, type: 3}
     Loop: 0
+  _grenadeAttackClips: []
+  _grenadeExplosionClips: []
   _switchToKnifeClips:
   - Clip: {fileID: 8300000, guid: 303751202eb10c64489ba9806accca28, type: 3}
     Loop: 0
@@ -398056,7 +398058,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8baf76758b202d4469ea40c8127dfac7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Team1.UI.PlayerGunChargeBar
+  _weaponSwitcher: {fileID: 0}
   _gunAttack: {fileID: 0}
+  _grenadeAttack: {fileID: 0}
   _slider: {fileID: 1078188611}
 --- !u!1 &1429621405
 GameObject:
@@ -398600,6 +398604,26 @@ PrefabInstance:
       propertyPath: _infiniteAmmoDuration
       value: 20
       objectReference: {fileID: 0}
+    - target: {fileID: 6418542977642010188, guid: cc2bef504141bf440938f71c25b33ed2, type: 3}
+      propertyPath: _sizePerChargeLevel
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6418542977642010188, guid: cc2bef504141bf440938f71c25b33ed2, type: 3}
+      propertyPath: _damagePerChargeLevel
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6418542977642010188, guid: cc2bef504141bf440938f71c25b33ed2, type: 3}
+      propertyPath: _oilCostPerChargeLevel
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6418542977642010188, guid: cc2bef504141bf440938f71c25b33ed2, type: 3}
+      propertyPath: _colliderSizePerChargeLevel
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6418542977642010188, guid: cc2bef504141bf440938f71c25b33ed2, type: 3}
+      propertyPath: _explosionRadiusPerChargeLevel
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 6428492209294381584, guid: cc2bef504141bf440938f71c25b33ed2, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.2
@@ -398654,19 +398678,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7137848960411748820, guid: cc2bef504141bf440938f71c25b33ed2, type: 3}
       propertyPath: _damage
-      value: 1000
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 7137848960411748820, guid: cc2bef504141bf440938f71c25b33ed2, type: 3}
       propertyPath: _maxChargeLevel
-      value: 20
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7137848960411748820, guid: cc2bef504141bf440938f71c25b33ed2, type: 3}
       propertyPath: _damagePerChargeLevel
-      value: 1.5
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 7137848960411748820, guid: cc2bef504141bf440938f71c25b33ed2, type: 3}
       propertyPath: _keepAnimationDuration
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7137848960411748820, guid: cc2bef504141bf440938f71c25b33ed2, type: 3}
+      propertyPath: _oilCostPerChargeLevel
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7264200545100099927, guid: cc2bef504141bf440938f71c25b33ed2, type: 3}
       propertyPath: m_Enabled
