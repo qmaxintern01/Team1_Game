@@ -226,6 +226,8 @@ namespace Team1
             Vector2 facing = _movePlayer != null ? _movePlayer.FacingDirection : Vector2.down;
             Vector3 spawnPosition = transform.position;
 
+            AudioManager.Instance?.PlayGunAttackSe();
+
             GunBullet bullet = Instantiate(_bulletPrefab, spawnPosition, Quaternion.identity);
             bullet.SetChargeScale(visualSizeMultiplier, colliderSizeMultiplier);
             bullet.Launch(facing, damage);

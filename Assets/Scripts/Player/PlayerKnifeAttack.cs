@@ -63,6 +63,8 @@ namespace Team1
 
         private void Attack()
         {
+            AudioManager.Instance?.PlayKnifeAttackSe();
+
             Vector2 facing = _movePlayer != null ? _movePlayer.FacingDirection : Vector2.down;
             Vector2 origin = (Vector2)transform.position + facing * (_range * 0.5f);
 

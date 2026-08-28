@@ -89,8 +89,23 @@ namespace Team1
 
         private void SelectWeapon(int index)
         {
+            if (_currentIndex == index)
+            {
+                return;
+            }
+
             _currentIndex = index;
             Debug.Log($"武器切替: {CurrentWeapon}");
+
+            // 銃系(アサルトライフル/グレネードランチャー)はまとめて「銃」の切替SEとして扱う
+            if (CurrentWeapon == WeaponType.Knife)
+            {
+                AudioManager.Instance?.PlaySwitchToKnifeSe();
+            }
+            else
+            {
+                AudioManager.Instance?.PlaySwitchToGunSe();
+            }
         }
     }
 }

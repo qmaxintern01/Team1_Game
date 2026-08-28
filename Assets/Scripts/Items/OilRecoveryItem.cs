@@ -33,6 +33,7 @@ namespace Team1
             }
 
             playerOil.AddOil(_recoveryAmount);
+            AudioManager.Instance?.PlayItemPickupSe();
             Destroy(gameObject);
         }
     }

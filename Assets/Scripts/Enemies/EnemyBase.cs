@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Team1.Result;
 using UnityEngine;
@@ -134,6 +135,7 @@ namespace Team1
             float distance = Vector3.Distance(transform.position, _player.transform.position);
             if (distance <= _attackRange && !_isBusy && _attackTimer <= 0f)
             {
+                PlayAttackSe();
                 PerformAttack();
                 _attackTimer = _attackCooldown;
             }
@@ -159,7 +161,8 @@ namespace Team1
         }
 
         // 攻撃判定用ヒットボックスを一定時間だけ有効化し、Collider2Dのトリガーでダメージ対象を検出する
-        protected IEnumerator ActivateHitboxRoutine(int damage, float radius, Vector2 facingDirection)
+        // onActivated: 攻撃SEなど、実際に判定が発生した瞬間(予兆・チャージ完了後)に鳴らしたい演出のコールバック
+        protected IEnumerator ActivateHitboxRoutine(int damage, float radius, Vector2 facingDirection, Action onActivated = null)
         {
             if (_attackHitbox == null)
             {
@@ -167,6 +170,7 @@ namespace Team1
             }
 
             _attackHitbox.Activate(damage, radius, facingDirection);
+            onActivated?.Invoke();
             yield return new WaitForSeconds(_hitActiveDuration);
             _attackHitbox.Deactivate();
         }
@@ -174,7 +178,7 @@ namespace Team1
         // 危険範囲を予告表示してから、一定時間後にその範囲へダメージを与える
         // recoveryTime: 大技の後の隙(ダウン・硬直)。IsBusyがtrueの間はEnemyPatrolの追尾・旋回が停止するため、
         // ここを延ばすほどプレイヤーが横移動で背後に回り込む猶予が長くなる
-        protected IEnumerator TelegraphAndDealDamage(int damage, float radius, float telegraphTime, float recoveryTime = 0f)
+        protected IEnumerator TelegraphAndDealDamage(int damage, float radius, float telegraphTime, float recoveryTime = 0f, Action onAttackJudged = null)
         {
             _isBusy = true;
             // 予兆表示と実際の判定がズレないよう、この攻撃を通して使う向きをここで一度だけ取得する
@@ -191,7 +195,7 @@ namespace Team1
                 _attackRangeIndicator.Hide();
             }
 
-            yield return ActivateHitboxRoutine(damage, radius, facingDirection);
+            yield return ActivateHitboxRoutine(damage, radius, facingDirection, onAttackJudged);
 
             if (recoveryTime > 0f)
             {
@@ -203,6 +207,8 @@ namespace Team1
 
         private void HandleDamaged(int amount)
         {
+            AudioManager.Instance?.PlayHitSe();
+
             if (_spriteRenderer == null)
             {
                 return;
@@ -226,6 +232,7 @@ namespace Team1
 
         private void HandleDied()
         {
+            PlayDefeatedSe();
             NotifyKillToTracker();
 
             if (_oilRecoveryAmount > 0 && _dropItemPrefab != null)
@@ -235,6 +242,32 @@ namespace Team1
             }
 
             Destroy(gameObject);
+        }
+
+        // WeakEnemyは攻撃が1種類のためここで一括再生できるが、MidBoss/BigBossは複数の攻撃パターンを
+        // PerformAttack内で抽選するため、どの攻撃が選ばれたかが分かるPerformAttackの override側でSEを鳴らす
+        private void PlayAttackSe()
+        {
+            if (this is WeakEnemy)
+            {
+                AudioManager.Instance?.PlayWeakEnemyAttackSe();
+            }
+        }
+
+        private void PlayDefeatedSe()
+        {
+            if (this is WeakEnemy)
+            {
+                AudioManager.Instance?.PlayWeakEnemyDefeatedSe();
+            }
+            else if (this is MidBoss)
+            {
+                AudioManager.Instance?.PlayMidBossDefeatedSe();
+            }
+            else if (this is BigBoss)
+            {
+                AudioManager.Instance?.PlayBigBossDefeatedSe();
+            }
         }
 
         // リザルト集計はWeakEnemy/MidBossの撃破のみを対象とする(BigBossはゲームクリア判定側で扱うため対象外)
