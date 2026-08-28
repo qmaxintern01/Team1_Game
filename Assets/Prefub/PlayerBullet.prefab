@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Team1.GunBullet
   _speed: 12
-  _lifeTime: 3
+  _lifeTime: 1.5
   _rotationOffsetDegrees: 0
   _visual: {fileID: 1214460466871006116}
   _collider: {fileID: 7333486564479901802}

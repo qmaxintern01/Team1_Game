@@ -542,8 +542,8 @@ MonoBehaviour:
   _maxHp: 300
   _oilRecoveryAmount: 50
   _dropItemPrefab: {fileID: -4191116266018124196, guid: bc8fb05cbe36b8d459519154270f7e8f, type: 3}
-  _detectionRange: 10
-  _attackRange: 1.5
+  _detectionRange: 15
+  _attackRange: 5
   _attackCooldown: 1.5
   _wallCollisionRadius: 0.45
   _wallLayer:
