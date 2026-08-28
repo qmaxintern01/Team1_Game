@@ -63,6 +63,12 @@ namespace Team1
         [Header("SE - プレイヤーの攻撃(銃)")]
         [SerializeField] private List<SeClip> _gunAttackClips = new List<SeClip>();
 
+        [Header("SE - プレイヤーの攻撃(グレネードランチャー発射)")]
+        [SerializeField] private List<SeClip> _grenadeAttackClips = new List<SeClip>();
+
+        [Header("SE - グレネード爆発")]
+        [SerializeField] private List<SeClip> _grenadeExplosionClips = new List<SeClip>();
+
         [Header("SE - 武器切替(ナイフ)")]
         [SerializeField] private List<SeClip> _switchToKnifeClips = new List<SeClip>();
 
@@ -102,6 +108,8 @@ namespace Team1
         private AudioSource _bigBossStompAttackLoopSource;
         private AudioSource _knifeAttackLoopSource;
         private AudioSource _gunAttackLoopSource;
+        private AudioSource _grenadeAttackLoopSource;
+        private AudioSource _grenadeExplosionLoopSource;
         private AudioSource _switchToKnifeLoopSource;
         private AudioSource _switchToGunLoopSource;
         private AudioSource _hitLoopSource;
@@ -270,6 +278,12 @@ namespace Team1
 
         public void PlayGunAttackSe() => PlaySe(_gunAttackClips, ref _gunAttackLoopSource);
         public void StopGunAttackSe() => StopLoopSe(_gunAttackLoopSource);
+
+        public void PlayGrenadeAttackSe() => PlaySe(_grenadeAttackClips, ref _grenadeAttackLoopSource);
+        public void StopGrenadeAttackSe() => StopLoopSe(_grenadeAttackLoopSource);
+
+        public void PlayGrenadeExplosionSe() => PlaySe(_grenadeExplosionClips, ref _grenadeExplosionLoopSource);
+        public void StopGrenadeExplosionSe() => StopLoopSe(_grenadeExplosionLoopSource);
 
         public void PlaySwitchToKnifeSe() => PlaySe(_switchToKnifeClips, ref _switchToKnifeLoopSource);
         public void StopSwitchToKnifeSe() => StopLoopSe(_switchToKnifeLoopSource);

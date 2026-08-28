@@ -20,6 +20,7 @@ GameObject:
   - component: {fileID: 7264200545100099927}
   - component: {fileID: 7137848960411748820}
   - component: {fileID: 6418542977642010088}
+  - component: {fileID: 6418542977642010188}
   - component: {fileID: -1172360785666130007}
   - component: {fileID: 2855044965133907171}
   m_Layer: 0
@@ -277,6 +278,32 @@ MonoBehaviour:
   _infiniteAmmoOilCost: 50
   _infiniteAmmoDuration: 5
   _infiniteAmmoCooldown: 60
+--- !u!114 &6418542977642010188
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5878468911460803625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f7d1b2c9e4a6d5f8c0b1a2d3e4f5061, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Team1.PlayerGrenadeAttack
+  _weaponSwitcher: {fileID: 0}
+  _movePlayer: {fileID: 0}
+  _grenadePrefab: {fileID: -4045614320608801176, guid: 1a2b3c4d5e6f70819203a4b5c6d7e8f9, type: 3}
+  _damage: 25
+  _oilCost: 5
+  _fireCooldown: 0.8
+  _chargeInterval: 1
+  _maxChargeLevel: 5
+  _damagePerChargeLevel: 5
+  _sizePerChargeLevel: 0.3
+  _colliderSizePerChargeLevel: 0.15
+  _explosionRadiusPerChargeLevel: 0.3
+  _oilCostPerChargeLevel: 2
+  _animator: {fileID: 0}
 --- !u!58 &-1172360785666130007
 CircleCollider2D:
   m_ObjectHideFlags: 0

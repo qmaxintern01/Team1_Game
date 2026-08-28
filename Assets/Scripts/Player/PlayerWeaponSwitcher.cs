@@ -3,7 +3,8 @@ using UnityEngine.InputSystem;
 
 namespace Team1
 {
-    // 武器切替の枠組み。現状はナイフのみ攻撃処理を実装済みで、銃2種は選択できるだけの状態
+    // 武器切替の枠組み。ナイフ(PlayerKnifeAttack)、アサルトライフル(PlayerGunAttack)、
+    // グレネードランチャー(PlayerGrenadeAttack)がそれぞれ自身のCurrentWeaponを見て攻撃可否を判定する
     public class PlayerWeaponSwitcher : MonoBehaviour
     {
 
