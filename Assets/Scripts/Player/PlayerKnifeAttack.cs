@@ -6,8 +6,14 @@ namespace Team1
     [RequireComponent(typeof(PlayerOil))]
     public class PlayerKnifeAttack : MonoBehaviour
     {
+        // プレイヤー本体のAnimator("Attack"ステート)とは別に、前方に表示する攻撃演出用オブジェクトのAnimatorも駆動する
+        private const string FrontEffectChildName = "Square";
+
         [SerializeField] private PlayerWeaponSwitcher _weaponSwitcher;
         [SerializeField] private MovePlayer _movePlayer;
+        [SerializeField] private Animator _animator;
+        [SerializeField] private Animator _frontEffectAnimator;
+        [SerializeField] private SpriteRenderer _frontEffectRenderer;
         [SerializeField] private int _damage = 10;
         [SerializeField] private float _range = 1.2f;
         [SerializeField] private float _radius = 0.8f;
@@ -28,6 +34,28 @@ namespace Team1
             if (_movePlayer == null)
             {
                 _movePlayer = FindAnyObjectByType<MovePlayer>();
+            }
+
+            if (_animator == null)
+            {
+                _animator = GetComponent<Animator>();
+            }
+
+            if (_frontEffectAnimator == null || _frontEffectRenderer == null)
+            {
+                Transform effectTransform = transform.Find(FrontEffectChildName);
+                if (effectTransform != null)
+                {
+                    if (_frontEffectAnimator == null)
+                    {
+                        _frontEffectAnimator = effectTransform.GetComponent<Animator>();
+                    }
+
+                    if (_frontEffectRenderer == null)
+                    {
+                        _frontEffectRenderer = effectTransform.GetComponent<SpriteRenderer>();
+                    }
+                }
             }
         }
 
@@ -68,6 +96,41 @@ namespace Team1
 
             Collider2D[] hits = Physics2D.OverlapCircleAll(origin, _radius, _enemyLayer);
             Debug.Log($"ナイフ攻撃発生: origin={origin}, radius={_radius}, hit数={hits.Length}");
+
+            if (_animator != null)
+            {
+                _animator.SetTrigger("isAttack");
+            }
+
+            if (_frontEffectAnimator != null)
+            {
+                // Square側のAnimatorはプレイヤー本体と同じMoveX/MoveYベースの方向分岐を持つため、向きを渡してから発火する
+                _frontEffectAnimator.SetFloat("MoveX", facing.x);
+                _frontEffectAnimator.SetFloat("MoveY", facing.y);
+                _frontEffectAnimator.SetTrigger("isAttack");
+
+                // 攻撃判定と同じ距離(_range)を使い、Squareの表示位置もプレイヤーの向いている方向に合わせる(Z位置は元のプレハブ設定を維持)
+                Transform effectTransform = _frontEffectAnimator.transform;
+                Vector2 effectOffset = facing * (_range * 0.5f);
+                effectTransform.localPosition = new Vector3(effectOffset.x, effectOffset.y, effectTransform.localPosition.z);
+
+                if (_frontEffectRenderer != null)
+                {
+                    // 下向き(手前)ほどY座標が小さくなり前面に出るよう、プレイヤーと同じY基準のSortingOrder計算式で揃える
+                    int sortingOrder = YSortConfig.CalculateSortingOrder(effectTransform.position.y);
+
+                    // 攻撃範囲内の敵の描画順よりは必ず前面になるよう底上げする(斬撃演出が敵に隠れて見えなくなるのを防ぐ)
+                    foreach (Collider2D hit in hits)
+                    {
+                        if (hit.TryGetComponent(out SpriteRenderer enemyRenderer))
+                        {
+                            sortingOrder = Mathf.Max(sortingOrder, enemyRenderer.sortingOrder + 1);
+                        }
+                    }
+
+                    _frontEffectRenderer.sortingOrder = sortingOrder;
+                }
+            }
 
             foreach (Collider2D hit in hits)
             {

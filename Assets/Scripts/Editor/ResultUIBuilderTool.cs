@@ -95,11 +95,12 @@ namespace Team1.EditorTools
             breakdownRect.anchoredPosition = new Vector2(0f, -80f);
             breakdownRect.sizeDelta = new Vector2(900f, 260f);
 
-            var (oilFill, oilText) = CreateBreakdownRow(breakdownPanel.transform, "OilRow", 0, "残量オイル 0", new Color(0.3f, 0.75f, 0.9f, 1f));
-            var (timeFill, timeText) = CreateBreakdownRow(breakdownPanel.transform, "TimeRow", 1, "クリアタイム 0", new Color(0.5f, 0.85f, 0.4f, 1f));
-            var (killFill, killText) = CreateBreakdownRow(breakdownPanel.transform, "KillRow", 2, "撃破数 0", new Color(0.85f, 0.75f, 0.3f, 1f));
-            var (stylishFill, stylishText) = CreateBreakdownRow(breakdownPanel.transform, "StylishRow", 3, "スタイリッシュ 0", new Color(0.85f, 0.35f, 0.75f, 1f));
-            var (damageFill, damageText) = CreateBreakdownRow(breakdownPanel.transform, "DamageRow", 4, "被ダメージ 0", new Color(0.9f, 0.35f, 0.35f, 1f));
+            // 各項目が連想しやすい色にしている: オイル=琥珀色、タイム=青、撃破数=オレンジ、スタイリッシュ=紫、被ダメージ=赤
+            var (oilFill, oilText) = CreateBreakdownRow(breakdownPanel.transform, "OilRow", 0, "残量オイル 0", new Color(0.45f, 0.32f, 0.12f, 1f));
+            var (timeFill, timeText) = CreateBreakdownRow(breakdownPanel.transform, "TimeRow", 1, "クリアタイム 0", new Color(0.25f, 0.55f, 0.95f, 1f));
+            var (killFill, killText) = CreateBreakdownRow(breakdownPanel.transform, "KillRow", 2, "撃破数 0", new Color(0.9f, 0.45f, 0.15f, 1f));
+            var (stylishFill, stylishText) = CreateBreakdownRow(breakdownPanel.transform, "StylishRow", 3, "スタイリッシュ 0", new Color(0.75f, 0.3f, 0.85f, 1f));
+            var (damageFill, damageText) = CreateBreakdownRow(breakdownPanel.transform, "DamageRow", 4, "被ダメージ 0", new Color(0.9f, 0.2f, 0.2f, 1f));
 
             // 次回の目標
             var adviceText = CreateTextObject(controllerGo.transform, "AdviceText", "", 26, new Color(0.9f, 0.9f, 0.7f), TextAnchor.MiddleCenter,
