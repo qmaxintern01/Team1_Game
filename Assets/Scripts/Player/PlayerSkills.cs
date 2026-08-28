@@ -31,6 +31,23 @@ namespace Team1
         // AR側(PlayerGunAttack)がこれを見て、オイル消費なし・威力半減で発砲する
         public bool IsInfiniteAmmoActive { get; private set; }
 
+        // UI表示用: クールダウンの設定値・必要オイル量
+        public float Skill1Cooldown => _healCooldown;
+        public float Skill2Cooldown => _infiniteAmmoCooldown;
+        public int Skill1OilCost => _healOilCost;
+        public int Skill2OilCost => _infiniteAmmoOilCost;
+
+        // UI表示用: クールダウンの残り時間
+        public float Skill1CooldownRemaining => Mathf.Max(0f, _healCooldownTimer);
+        public float Skill2CooldownRemaining => Mathf.Max(0f, _infiniteAmmoCooldownTimer);
+
+        // UI表示用: クールダウンの進捗(0=使用直後, 1=使用可能)
+        public float Skill1CooldownProgress01 => _healCooldown <= 0f ? 1f : 1f - Mathf.Clamp01(_healCooldownTimer / _healCooldown);
+        public float Skill2CooldownProgress01 => _infiniteAmmoCooldown <= 0f ? 1f : 1f - Mathf.Clamp01(_infiniteAmmoCooldownTimer / _infiniteAmmoCooldown);
+
+        public bool IsSkill1Ready => _healCooldownTimer <= 0f;
+        public bool IsSkill2Ready => _infiniteAmmoCooldownTimer <= 0f && !IsInfiniteAmmoActive;
+
         private void Awake()
         {
             _oil = GetComponent<PlayerOil>();
